@@ -41,7 +41,13 @@ Open the printed URL, start Level 01, and keep your editor open next to the brow
 - **Don't edit anything in `src/shell/`** — that's the game itself, and it's bug-free. All planted bugs live in `src/levels/`.
 - **Don't remove `data-testid` attributes or edit the `checks` in a level's `manifest.js`** — they're the executable spec. *Reading* them when stuck is fair game; that's what reading a failing test at work is.
 - If a fix doesn't seem to register after hot-reload, refresh the browser tab and re-run the checks.
-- Commit as you go — `git diff` of your fixes becomes a record of what you learned, and `git checkout` is your level-reset button.
+- **Keep `main` pristine — it's the game cartridge.** Play on your own branch and commit your fixes there:
+
+  ```bash
+  git checkout -b playthrough
+  ```
+
+  Your commits become a record of what you learned, and `main` always holds the original buggy state — so `git restore --source=main src/levels/06-musical-chairs/` resets a single level, and switching back to `main` resets the whole game for a fresh run (or for the next player).
 - Using an AI assistant? Ask it to **coach, not solve** — the in-app hints exist for a reason.
 
 ## Tech notes
