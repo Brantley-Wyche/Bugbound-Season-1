@@ -56,18 +56,17 @@ export default function App() {
       <header className="app-header">
         <button className="wordmark" onClick={() => navigate('/')}>
           <span className="bug">🐛</span>
-          <span>Bugbound</span>
-          <span className="season">Season 1</span>
+          <span>BUGBOUND</span>
+          <span className="season">SEASON 1</span>
         </button>
         <div className="header-progress">
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${(completed.size / levels.length) * 100}%` }}
-            />
+          <div className="uptime-strip" title={`${completed.size} of ${levels.length} incidents resolved`}>
+            {levels.map((l) => (
+              <span key={l.id} className={`seg ${completed.has(l.id) ? 'done' : ''}`} />
+            ))}
           </div>
           <span className="label">
-            {completed.size} / {levels.length} fixed
+            {completed.size}/{levels.length} RESOLVED
           </span>
         </div>
       </header>
@@ -83,7 +82,7 @@ export default function App() {
       )}
 
       <footer className="app-footer">
-        <span>Built with React + Vite · Levels &amp; bugs authored by Claude</span>
+        <span>BUGBOUND · SEASON 1 · REACT + VITE · LEVELS &amp; BUGS BY CLAUDE</span>
         <button className="link-button" onClick={resetProgress}>
           Reset progress
         </button>

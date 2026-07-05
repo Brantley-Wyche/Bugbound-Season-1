@@ -12,8 +12,8 @@ export default function HintBox({ levelId }) {
   const encoded = hints[levelId] || [];
 
   return (
-    <div className="panel">
-      <h3>💡 Hints</h3>
+    <div className="panel panel-hints">
+      <h3>Hints</h3>
       <p className="hints-note">
         Hints are stored encoded so you can't spoil yourself by accident. Reveal them one at a
         time — a real debugging attempt first is worth more than all three combined.

@@ -7,15 +7,15 @@ function LevelCard({ level, completed }) {
 
   return (
     <button
-      className={`level-card ${done ? 'complete' : ''} ${unlocked ? '' : 'locked'}`}
+      className={`level-card sev-${level.severity} ${done ? 'complete' : ''} ${unlocked ? '' : 'locked'}`}
       onClick={() => unlocked && navigate(`/level/${level.id}`)}
       disabled={!unlocked}
       title={unlocked ? level.title : 'Fix the previous level to unlock'}
     >
       <div className="top-row">
-        <span className="level-num">LVL {String(level.number).padStart(2, '0')}</span>
-        <span className={`level-status ${done ? 'done' : unlocked ? '' : 'lock'}`}>
-          {done ? '✓ fixed' : unlocked ? '' : '🔒'}
+        <span className="level-num">BUG-{String(level.number).padStart(3, '0')}</span>
+        <span className={`level-status ${done ? 'done' : unlocked ? 'open' : 'lock'}`}>
+          {done ? '✓ RESOLVED' : unlocked ? 'OPEN' : 'LOCKED'}
         </span>
       </div>
       <span className="name">{level.title}</span>
@@ -30,18 +30,29 @@ export default function LevelMap({ completed }) {
   const nextLevel = levels.find((l) => !completed.has(l.id) && isUnlocked(l, completed));
   const allDone = completed.size === levels.length;
 
+  const openCount = levels.length - completed.size;
+  const statusTone = allDone ? 'ok' : completed.size === 0 ? 'err' : 'warn';
+  const statusClass = allDone ? 'state-ok' : completed.size === 0 ? 'state-critical' : 'state-degraded';
+  const statusText = allDone
+    ? 'ALL SYSTEMS OPERATIONAL'
+    : `${completed.size === 0 ? 'CRITICAL' : 'DEGRADED'} — ${openCount} OPEN INCIDENT${openCount === 1 ? '' : 'S'}`;
+
   return (
     <main>
       <section className="hero">
-        <p className="eyebrow">Season 1 · Core React</p>
+        <p className="eyebrow">Season 1 · Core React · On-Call Rotation</p>
         <h1>Learn React by fixing it.</h1>
         <p className="tagline">
           Every level teaches one React concept — and ships with a real bug. Read the ticket,
           open the file in your editor, fix the code, and run the checks to move on. You're on
           call.
         </p>
+        <p className="system-status">
+          <span className={`status-dot ${statusTone} ${allDone ? '' : 'live'}`} />
+          <span className={statusClass}>SYSTEM STATUS: {statusText}</span>
+        </p>
         {allDone ? (
-          <span className="chip severity-Low">🏆 Season complete — all {levels.length} bugs fixed</span>
+          <span className="chip severity-Low">Season complete — all {levels.length} incidents resolved</span>
         ) : (
           <button
             className="btn btn-primary"

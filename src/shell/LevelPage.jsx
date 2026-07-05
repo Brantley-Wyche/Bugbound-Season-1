@@ -28,7 +28,7 @@ export default function LevelPage({ level, isComplete, onComplete }) {
       {isComplete && (
         <div className="success-banner" style={{ marginBottom: 20 }}>
           <div className="msg">
-            <strong>🎉 Bug squashed!</strong>
+            <strong>✓ Incident resolved</strong>
             <span>
               {next
                 ? 'The blocker is cleared — the next level is unlocked.'
@@ -49,17 +49,22 @@ export default function LevelPage({ level, isComplete, onComplete }) {
 
       <div className="level-layout">
         <div className="column">
-          <div className="panel">
-            <h3>📘 The concept</h3>
+          <div className="panel panel-concept">
+            <h3>Concept</h3>
             <Prose paragraphs={level.lesson} />
           </div>
 
           <div className="panel bug-report">
-            <h3>🐛 Bug report</h3>
+            <h3>Bug report</h3>
             <div className="ticket-meta">
-              <span>BUG-{String(level.number).padStart(3, '0')}</span>
+              <span className="ticket-id">BUG-{String(level.number).padStart(3, '0')}</span>
               <span>·</span>
-              <span>status: {isComplete ? 'RESOLVED' : 'OPEN'}</span>
+              <span>SEV: {level.severity.toUpperCase()}</span>
+              <span>·</span>
+              <span className={isComplete ? 'ticket-resolved' : 'ticket-open'}>
+                <span className={`status-dot ${isComplete ? 'ok' : 'err live'}`} />{' '}
+                {isComplete ? 'RESOLVED' : 'OPEN'}
+              </span>
             </div>
             <p className="symptom">{level.symptom}</p>
             <div className="file-list">
@@ -76,8 +81,8 @@ export default function LevelPage({ level, isComplete, onComplete }) {
         </div>
 
         <div className="column">
-          <div className="panel demo-panel">
-            <h3>🔬 Live preview</h3>
+          <div className="panel panel-demo demo-panel">
+            <h3>Live preview</h3>
             <p className="demo-note">
               This is the real buggy component — interact with it and reproduce the report.
               Your edits hot-reload here.

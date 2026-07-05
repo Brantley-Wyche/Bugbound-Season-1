@@ -24,8 +24,8 @@ export default function ChecksRunner({ level, onAllPass }) {
   }
 
   return (
-    <div className="panel">
-      <h3>✅ Checks</h3>
+    <div className="panel panel-checks">
+      <h3>Checks</h3>
       <button className="btn btn-primary" onClick={runAll} disabled={running}>
         {running ? 'Running…' : results ? 'Re-run checks' : 'Run checks'}
       </button>
@@ -37,7 +37,7 @@ export default function ChecksRunner({ level, onAllPass }) {
               key={i}
               className={`check-row ${r.pending ? 'pending' : r.pass ? 'pass' : 'fail'}`}
             >
-              <span className="icon">{r.pending ? '○' : r.pass ? '✓' : '✕'}</span>
+              <span className="check-chip">{r.pending ? 'PEND' : r.pass ? 'PASS' : 'FAIL'}</span>
               <div className="check-body">
                 <div className="check-name">{r.name}</div>
                 {!r.pending && !r.pass && <div className="check-error">{r.message}</div>}
