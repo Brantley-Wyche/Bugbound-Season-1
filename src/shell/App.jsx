@@ -73,6 +73,7 @@ export default function App() {
 
       {showLevel ? (
         <LevelPage
+          key={activeLevel.id}
           level={activeLevel}
           isComplete={completed.has(activeLevel.id)}
           onComplete={() => markComplete(activeLevel.id)}
