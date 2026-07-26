@@ -28,14 +28,15 @@ export default function LevelMap({ completed }) {
   const coreLevels = levels.filter((l) => l.number <= 12);
   const tsLevels = levels.filter((l) => l.number > 12);
   const nextLevel = levels.find((l) => !completed.has(l.id) && isUnlocked(l, completed));
-  const allDone = completed.size === levels.length;
+  const completedCount = levels.filter((level) => completed.has(level.id)).length;
+  const allDone = completedCount === levels.length;
 
-  const openCount = levels.length - completed.size;
-  const statusTone = allDone ? 'ok' : completed.size === 0 ? 'err' : 'warn';
-  const statusClass = allDone ? 'state-ok' : completed.size === 0 ? 'state-critical' : 'state-degraded';
+  const openCount = levels.length - completedCount;
+  const statusTone = allDone ? 'ok' : completedCount === 0 ? 'err' : 'warn';
+  const statusClass = allDone ? 'state-ok' : completedCount === 0 ? 'state-critical' : 'state-degraded';
   const statusText = allDone
     ? 'ALL SYSTEMS OPERATIONAL'
-    : `${completed.size === 0 ? 'CRITICAL' : 'DEGRADED'} — ${openCount} OPEN INCIDENT${openCount === 1 ? '' : 'S'}`;
+    : `${completedCount === 0 ? 'CRITICAL' : 'DEGRADED'} — ${openCount} OPEN INCIDENT${openCount === 1 ? '' : 'S'}`;
 
   return (
     <main>
@@ -58,9 +59,26 @@ export default function LevelMap({ completed }) {
             className="btn btn-primary"
             onClick={() => nextLevel && navigate(`/level/${nextLevel.id}`)}
           >
-            {completed.size === 0 ? 'Start Level 01' : `Continue → Level ${String(nextLevel.number).padStart(2, '0')}`}
+            {completedCount === 0 ? 'Start Level 01' : `Continue → Level ${String(nextLevel.number).padStart(2, '0')}`}
           </button>
         )}
+
+        <div className="workflow-overview" aria-label="The Bugbound debugging loop">
+          {[
+            ['01', 'Learn', 'Read the concept'],
+            ['02', 'Reproduce', 'Trigger the symptom'],
+            ['03', 'Repair', 'Work in your editor'],
+            ['04', 'Verify', 'Run the checks'],
+          ].map(([number, title, detail]) => (
+            <div className="workflow-step" key={number}>
+              <span className="workflow-number">{number}</span>
+              <span>
+                <strong>{title}</strong>
+                <small>{detail}</small>
+              </span>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="map-section">

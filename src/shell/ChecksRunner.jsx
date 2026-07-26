@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { runCheck } from './harness.jsx';
+import { recordCheckRun } from './learning.js';
 
 export default function ChecksRunner({ level, onAllPass }) {
   const [results, setResults] = useState(null);
@@ -20,18 +21,19 @@ export default function ChecksRunner({ level, onAllPass }) {
     }
 
     setRunning(false);
+    recordCheckRun(level.id, finished);
     if (finished.every((r) => r.pass)) onAllPass();
   }
 
   return (
-    <div className="panel panel-checks">
+    <div className="panel panel-checks" aria-busy={running}>
       <h3>Checks</h3>
       <button className="btn btn-primary" onClick={runAll} disabled={running}>
         {running ? 'Running…' : results ? 'Re-run checks' : 'Run checks'}
       </button>
 
       {results ? (
-        <div className="checks-list">
+        <div className="checks-list" aria-live="polite" aria-atomic="false">
           {results.map((r, i) => (
             <div
               key={i}

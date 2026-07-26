@@ -41,6 +41,8 @@
 html, body {
   margin: 0;
   padding: 0;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 body {
@@ -70,6 +72,11 @@ button { font-family: inherit; cursor: pointer; }
 
 a { color: var(--info); text-decoration: none; }
 a:hover { text-decoration: underline; }
+
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 3px;
+}
 
 ::selection { background: rgba(63, 185, 80, 0.25); }
 
@@ -111,6 +118,10 @@ a:hover { text-decoration: underline; }
   padding: 18px 0 16px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 34px;
+}
+
+.desktop-notice {
+  display: none;
 }
 
 .wordmark {
@@ -264,6 +275,47 @@ a:hover { text-decoration: underline; }
   font-size: 16.5px;
   max-width: 640px;
   margin: 0 0 18px;
+}
+
+.workflow-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  max-width: 780px;
+  margin-top: 32px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--border);
+}
+
+.workflow-step {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  min-width: 0;
+  padding: 12px 14px;
+  background: var(--panel);
+}
+
+.workflow-number {
+  color: var(--ok);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.workflow-step strong,
+.workflow-step small {
+  display: block;
+}
+
+.workflow-step strong {
+  font-size: 13px;
+}
+
+.workflow-step small {
+  color: var(--muted);
+  font-size: 11.5px;
 }
 
 .system-status {
@@ -428,11 +480,58 @@ a:hover { text-decoration: underline; }
 
 .level-title-row .level-num { font-size: 13px; }
 
+.level-workflow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+  margin: -6px 0 22px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.level-workflow li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 10px;
+  color: var(--faint);
+  background: var(--bg-soft);
+  border-right: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.level-workflow li:last-child { border-right: 0; }
+.level-workflow li.current { color: var(--text); background: var(--panel); }
+.level-workflow li.done { color: var(--ok); background: var(--ok-dim); }
+
+.level-workflow li span {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 10px;
+}
+
 .level-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 18px;
   align-items: start;
+}
+
+@media (min-width: 901px) {
+  .column-workspace {
+    position: sticky;
+    top: 18px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -650,6 +749,7 @@ a:hover { text-decoration: underline; }
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+  margin-bottom: 14px;
 }
 
 .success-banner .msg strong {
@@ -664,6 +764,46 @@ a:hover { text-decoration: underline; }
 }
 
 .success-banner .msg span { color: var(--muted); font-size: 13.5px; }
+
+.resolution-review {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border: 1px solid rgba(63, 185, 80, 0.25);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(63, 185, 80, 0.08), var(--panel) 55%);
+}
+
+.review-kicker {
+  color: var(--ok);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.resolution-review h2 {
+  margin: 4px 0 4px;
+  font-size: 20px;
+}
+
+.resolution-review p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.resolution-review ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #b8c5d3;
+  font-size: 13px;
+}
+
+.resolution-review li + li { margin-top: 4px; }
 
 /* Hints */
 
@@ -715,6 +855,149 @@ a:hover { text-decoration: underline; }
 }
 
 .hints-note { font-size: 12.5px; color: var(--muted); margin: 0 0 12px; }
+
+@media (max-width: 700px) {
+  .app {
+    padding: 0 18px 40px;
+  }
+
+  .app-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .header-progress {
+    justify-content: space-between;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .uptime-strip {
+    flex: 1;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .uptime-strip .seg {
+    flex: 1;
+    width: auto;
+    min-width: 3px;
+    height: 8px;
+  }
+
+  .desktop-notice {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 0 0 20px;
+    padding: 12px 14px;
+    color: var(--muted);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--panel);
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+
+  .desktop-notice strong {
+    display: block;
+    color: var(--text);
+  }
+
+  .desktop-notice-icon {
+    color: var(--info);
+    font-family: var(--font-mono);
+  }
+
+  .hero {
+    padding-top: 12px;
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 10vw, 40px);
+  }
+
+  .hero .tagline {
+    font-size: 15px;
+  }
+
+  .workflow-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .level-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .level-header {
+    margin-bottom: 20px;
+  }
+
+  .level-title-row {
+    align-items: center;
+    gap: 8px 10px;
+  }
+
+  .level-title-row h1 {
+    flex-basis: 100%;
+    order: -1;
+    font-size: 27px;
+  }
+
+  .level-workflow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .level-workflow li:nth-child(2) {
+    border-right: 0;
+  }
+
+  .level-workflow li:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .bug-report .ticket-meta {
+    flex-wrap: wrap;
+  }
+
+  .file-list code,
+  .demo-crash pre {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .resolution-review {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .success-banner {
+    align-items: flex-start;
+  }
+
+  .app-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 /* ============================================================
    Shared styles for level components (the "product" being fixed)

@@ -25,30 +25,52 @@ export default function LevelPage({ level, isComplete, onComplete }) {
         </div>
       </div>
 
+      <ol className="level-workflow" aria-label="Level workflow">
+        <li><span>1</span> Learn</li>
+        <li><span>2</span> Reproduce</li>
+        <li><span>3</span> Repair</li>
+        <li className={isComplete ? 'done' : 'current'}><span>4</span> Verify</li>
+      </ol>
+
       {isComplete && (
-        <div className="success-banner" style={{ marginBottom: 20 }}>
-          <div className="msg">
-            <strong>✓ Incident resolved</strong>
-            <span>
-              {next
-                ? 'The blocker is cleared — the next level is unlocked.'
-                : 'That was the last one. Season 1 complete!'}
-            </span>
+        <>
+          <div className="success-banner">
+            <div className="msg">
+              <strong>✓ Incident resolved</strong>
+              <span>
+                {next
+                  ? 'The blocker is cleared — the next level is unlocked.'
+                  : 'That was the last one. Season 1 complete!'}
+              </span>
+            </div>
+            {next ? (
+              <button className="btn btn-primary" onClick={() => navigate(`/level/${next.id}`)}>
+                Next: {next.title} →
+              </button>
+            ) : (
+              <button className="btn btn-primary" onClick={() => navigate('/')}>
+                Back to the map 🏆
+              </button>
+            )}
           </div>
-          {next ? (
-            <button className="btn btn-primary" onClick={() => navigate(`/level/${next.id}`)}>
-              Next: {next.title} →
-            </button>
-          ) : (
-            <button className="btn btn-primary" onClick={() => navigate('/')}>
-              Back to the map 🏆
-            </button>
-          )}
-        </div>
+          <section className="resolution-review" aria-labelledby="resolution-review-title">
+            <div>
+              <span className="review-kicker">Post-incident review</span>
+              <h2 id="resolution-review-title">Make the fix stick.</h2>
+              <p>
+                Before moving on, explain what React was doing, why your change corrected it,
+                and which signal helped you find it.
+              </p>
+            </div>
+            <ul>
+              {level.checks.map((check) => <li key={check.name}>{check.name}</li>)}
+            </ul>
+          </section>
+        </>
       )}
 
       <div className="level-layout">
-        <div className="column">
+        <div className="column column-brief">
           <div className="panel panel-concept">
             <h3>Concept</h3>
             <Prose paragraphs={level.lesson} />
@@ -80,7 +102,7 @@ export default function LevelPage({ level, isComplete, onComplete }) {
           <HintBox levelId={level.id} />
         </div>
 
-        <div className="column">
+        <div className="column column-workspace">
           <div className="panel panel-demo demo-panel">
             <h3>Live preview</h3>
             <p className="demo-note">

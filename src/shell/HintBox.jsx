@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import hints from '../levels/hints.json';
+import { recordHintReveal } from './learning.js';
 
 const TIER_LABELS = ['Gentle nudge', 'Closer look', 'Basically the answer'];
 
@@ -10,6 +11,13 @@ function decode(b64) {
 export default function HintBox({ levelId }) {
   const [revealed, setRevealed] = useState([false, false, false]);
   const encoded = hints[levelId] || [];
+
+  const toggleHint = (index) => {
+    setRevealed((prev) => {
+      if (!prev[index]) recordHintReveal(levelId, index + 1);
+      return prev.map((value, itemIndex) => (itemIndex === index ? !value : value));
+    });
+  };
 
   return (
     <div className="panel panel-hints">
@@ -23,14 +31,18 @@ export default function HintBox({ levelId }) {
           <div className="hint-item" key={i}>
             <button
               className="hint-toggle"
-              onClick={() =>
-                setRevealed((prev) => prev.map((v, j) => (j === i ? !v : v)))
-              }
+              onClick={() => toggleHint(i)}
+              aria-expanded={revealed[i]}
+              aria-controls={`${levelId}-hint-${i + 1}`}
             >
               <span>Hint {i + 1}</span>
               <span className="tier">{revealed[i] ? 'hide' : TIER_LABELS[i]}</span>
             </button>
-            {revealed[i] && <div className="hint-body">{decode(b64)}</div>}
+            {revealed[i] && (
+              <div className="hint-body" id={`${levelId}-hint-${i + 1}`}>
+                {decode(b64)}
+              </div>
+            )}
           </div>
         ))}
       </div>

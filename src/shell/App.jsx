@@ -4,6 +4,8 @@ import { loadCompleted, saveCompleted, clearProgress } from './progress.js';
 import LevelMap from './LevelMap.jsx';
 import LevelPage from './LevelPage.jsx';
 
+const levelIds = levels.map((level) => level.id);
+
 function useHashRoute() {
   const [hash, setHash] = useState(window.location.hash);
   useEffect(() => {
@@ -27,7 +29,8 @@ export function isUnlocked(level, completed) {
 
 export default function App() {
   const route = useHashRoute();
-  const [completed, setCompleted] = useState(loadCompleted);
+  const [completed, setCompleted] = useState(() => loadCompleted(levelIds));
+  const completedCount = levels.filter((level) => completed.has(level.id)).length;
 
   const markComplete = (id) => {
     setCompleted((prev) => {
@@ -60,16 +63,36 @@ export default function App() {
           <span className="season">SEASON 1</span>
         </button>
         <div className="header-progress">
-          <div className="uptime-strip" title={`${completed.size} of ${levels.length} incidents resolved`}>
+          <div
+            className="uptime-strip"
+            title={`${completedCount} of ${levels.length} incidents resolved`}
+            role="progressbar"
+            aria-label="Season progress"
+            aria-valuemin="0"
+            aria-valuemax={levels.length}
+            aria-valuenow={completedCount}
+          >
             {levels.map((l) => (
-              <span key={l.id} className={`seg ${completed.has(l.id) ? 'done' : ''}`} />
+              <span
+                key={l.id}
+                className={`seg ${completed.has(l.id) ? 'done' : ''}`}
+                aria-hidden="true"
+              />
             ))}
           </div>
           <span className="label">
-            {completed.size}/{levels.length} RESOLVED
+            {completedCount}/{levels.length} RESOLVED
           </span>
         </div>
       </header>
+
+      <aside className="desktop-notice" role="note">
+        <span className="desktop-notice-icon" aria-hidden="true">▣</span>
+        <span>
+          <strong>Best experienced on a computer.</strong> Bugbound works on smaller screens, but
+          the intended setup is your editor and this app side by side.
+        </span>
+      </aside>
 
       {showLevel ? (
         <LevelPage

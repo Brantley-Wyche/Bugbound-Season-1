@@ -2,9 +2,14 @@
 
 > **Learn React by fixing it.** A level-based debugging game where every lesson ships with a real, intentionally planted bug — and you're the engineer on call.
 
+![Bugbound Season 1 incident map](docs/bugbound-season-1.jpg)
+
 Bugbound is a self-contained React practice app. Instead of watching tutorials, you work **15 escalating levels**: each one teaches a core React concept, then hands you a bug report for a live component that genuinely misbehaves. You open the file in your own editor, fix the code, watch it hot-reload, and run the in-app checks. All green → the next level unlocks.
 
 No embedded code editor, no sandbox — you use your real editor, real Vite HMR, and real debugging workflow, because that *is* the skill being practiced.
+
+> **Use a computer for the intended experience.** The interface is responsive, but Bugbound is
+> designed for an editor and browser running side by side.
 
 ## How it works
 
@@ -18,6 +23,10 @@ Each level has four parts:
 | ✅ **Checks** | An in-browser test harness that mounts the component in isolation, simulates real clicks and typing, and shows pass/fail with readable failure messages |
 
 Progress is saved to `localStorage`. Three escalating hints per level are stored **base64-encoded** (decoded only when you click "reveal"), and [SOLUTIONS.md](SOLUTIONS.md) is encoded too — you can't spoil yourself by accident.
+
+After an incident is resolved, a short post-incident review asks you to explain the mechanism and
+the evidence that led to your fix. Check attempts and hint usage are stored locally as a
+spoiler-free learning profile for future personalized practice.
 
 ## The curriculum
 
