@@ -12,11 +12,11 @@ export default {
     'src/levels/14-hook-line-sinker/useToggle.ts',
   ],
   symptom:
-    'Email digests should default to On, but the panel shows Off. And every Toggle button is dead — clicks change nothing, no errors anywhere. The hook and the component each look fine on their own…',
+    'The settings panel crashes as soon as it renders, before any switches appear. The hook and the component each look reasonable on their own, but disagree when used together.',
   lesson: [
-    'A custom hook is just a function, and its return value is an API. `useState` returns a tuple — `[value, setter]` — which is why array destructuring works on it. But nothing forces YOUR hooks to follow that convention; a hook returning an object `{ on, toggle }` destructured as an array yields only `undefined`s.',
+    'A custom hook is just a function, and its return value is an API. `useState` returns a tuple — `[value, setter]` — which is why array destructuring works on it. But nothing forces YOUR hooks to follow that convention. A plain object such as `{ on, toggle }` is not iterable, so trying to destructure it as an array throws before rendering can finish.',
     'This is precisely the mismatch TypeScript exists to catch — a caller disagreeing with a function about its return shape. Type the hook honestly and the wrong destructuring turns red immediately. Return `[on, toggle] as const` and annotate: `function useToggle(initial: boolean): readonly [boolean, () => void]`. The `as const` matters — without it TypeScript widens the tuple to `(boolean | (() => void))[]`, which is too sloppy to catch misuse.',
-    'And notice the failure mode when types DON’T catch it: `onClick={undefined}` is a legal prop. React renders a perfectly healthy-looking button wired to nothing. Silent `undefined`s from shape mismatches are the quietest bugs in JavaScript — make your types loud so your runtime doesn’t have to be.',
+    'Other shape mismatches can fail more quietly: reading a property that was never returned gives `undefined`, and `onClick={undefined}` is a legal prop. That can leave a healthy-looking button wired to nothing. Honest return types catch both the loud and quiet versions before runtime.',
   ],
   checks: [
     {

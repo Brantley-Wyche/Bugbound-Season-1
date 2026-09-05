@@ -10,7 +10,7 @@ export default {
   vague: true,
   files: ['src/levels/15-final-boss/'],
   symptom:
-    'The cart is a disaster. Adding a product greys out its button but the cart stays empty — until some other interaction makes items pop in late. Removing an item deletes everything EXCEPT that item. QA gave up counting the bugs. (Intel says: more than one, fewer than four.)',
+    'Cart actions are unreliable: added products do not reliably appear immediately, and Remove does not remove the selected product. Trace the transitions across the component and reducer. There is more than one bug to investigate.',
   lesson: [
     '`useReducer` centralizes state transitions: the component dispatches actions (plain objects describing what happened) and a reducer — a pure function `(state, action) => newState` — computes the next state. All your state logic in one testable place.',
     'The purity is load-bearing. A reducer must return a NEW state object, never mutate the existing one: React compares the returned reference against the old state to decide whether anything changed. Mutate-and-return-the-same-object means "nothing changed" — your update happened in memory but the UI never hears about it, until an unrelated render accidentally reveals it.',

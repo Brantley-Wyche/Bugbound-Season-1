@@ -4,10 +4,26 @@ function emptyStore() {
   return { version: 1, levels: {} };
 }
 
+const isRecord = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+const counter = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+function normalizeActivity(value) {
+  const activity = isRecord(value) ? value : {};
+  return {
+    checkRuns: counter(activity.checkRuns),
+    passedRuns: counter(activity.passedRuns),
+    failedRuns: counter(activity.failedRuns),
+    hintsRevealed: [...new Set(Array.isArray(activity.hintsRevealed)
+      ? activity.hintsRevealed.filter(tier => Number.isInteger(tier) && tier >= 1 && tier <= 3) : [])].sort(),
+    lastPracticedAt: typeof activity.lastPracticedAt === 'string' && Number.isFinite(Date.parse(activity.lastPracticedAt))
+      ? activity.lastPracticedAt : null,
+  };
+}
+
 function loadStore() {
   try {
     const parsed = JSON.parse(localStorage.getItem(KEY));
-    return parsed?.version === 1 && parsed.levels ? parsed : emptyStore();
+    if (parsed?.version !== 1 || !isRecord(parsed.levels)) return emptyStore();
+    return { version: 1, levels: Object.fromEntries(Object.entries(parsed.levels).map(([id, value]) => [id, normalizeActivity(value)])) };
   } catch {
     return emptyStore();
   }
@@ -16,12 +32,7 @@ function loadStore() {
 function updateLevel(levelId, updater) {
   try {
     const store = loadStore();
-    const current = store.levels[levelId] || {
-      checkRuns: 0,
-      passedRuns: 0,
-      failedRuns: 0,
-      hintsRevealed: [],
-    };
+    const current = normalizeActivity(Object.hasOwn(store.levels, levelId) ? store.levels[levelId] : null);
 
     store.levels[levelId] = {
       ...updater(current),
@@ -44,6 +55,7 @@ export function recordCheckRun(levelId, results) {
 }
 
 export function recordHintReveal(levelId, tier) {
+  if (!Number.isInteger(tier) || tier < 1 || tier > 3) return;
   updateLevel(levelId, (current) => ({
     ...current,
     hintsRevealed: [...new Set([...current.hintsRevealed, tier])].sort(),

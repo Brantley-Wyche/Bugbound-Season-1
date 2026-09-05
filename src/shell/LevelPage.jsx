@@ -1,129 +1,92 @@
 import { useState } from 'react';
 import { levels } from '../levels/index.js';
-import { navigate } from './App.jsx';
 import Prose from './Prose.jsx';
-import ErrorBoundary from './ErrorBoundary.jsx';
+import ExercisePreview from './ExercisePreview.jsx';
 import ChecksRunner from './ChecksRunner.jsx';
 import HintBox from './HintBox.jsx';
 
-export default function LevelPage({ level, isComplete, onComplete }) {
+function jumpToSection(id) {
+  const target = document.getElementById(id);
+  if (target instanceof HTMLDetailsElement) target.open = true;
+  target?.scrollIntoView({ behavior: 'auto', block: 'start' });
+  target?.focus({ preventScroll: true });
+}
+
+export default function LevelPage({ level, isComplete, isSaved = isComplete, onComplete }) {
   const [demoKey, setDemoKey] = useState(0);
-  const next = levels.find((l) => l.number === level.number + 1);
-  const Demo = level.Component;
+  const next = levels.find((item) => item.number === level.number + 1);
 
   return (
-    <main>
-      <div className="level-header">
-        <button className="back-link" onClick={() => navigate('/')}>
-          ← Back to the map
-        </button>
-        <div className="level-title-row">
-          <span className="level-num">LVL {String(level.number).padStart(2, '0')}</span>
-          <h1>{level.title}</h1>
-          <span className="chip">{level.concept}</span>
-          <span className={`chip severity-${level.severity}`}>Severity: {level.severity}</span>
+    <main id="main-content" tabIndex={-1}>
+      <header className="level-header">
+        <a className="back-link" href="#/">← Incident register</a>
+        <div className="level-heading">
+          <span className="folio-number" aria-label={`Level ${level.number}`}>{String(level.number).padStart(2, '0')}</span>
+          <div>
+            <h1 id="page-title" tabIndex={-1}>{level.title}</h1>
+            <p className="level-metadata"><span>{level.concept}</span><span>Severity: {level.severity}</span><span className={isComplete ? 'state-ok' : 'state-open'}>{isComplete ? (isSaved ? 'Completion saved' : 'Completed this visit') : 'Open'}</span></p>
+          </div>
         </div>
+        <nav className="section-nav" aria-label="In this incident">
+          <button type="button" onClick={() => jumpToSection('concept')}>Read the concept</button>
+          <button type="button" onClick={() => jumpToSection('live-preview')}>Try the preview</button>
+          <button type="button" onClick={() => jumpToSection('checks')}>Run the checks</button>
+          <button type="button" onClick={() => jumpToSection('hints')}>Get a hint</button>
+        </nav>
+      </header>
+
+      <div aria-live="polite" aria-atomic="true">
+        {isComplete && (
+          <section className="resolution" aria-labelledby="resolution-title">
+            <div>
+              <h2 id="resolution-title">Resolution recorded.</h2>
+              <p>{isSaved ? 'Your earned progress is saved.' : 'Your fix passed in this visit, but progress has not been saved.'} Run the checks to verify your current source.</p>
+            </div>
+            <a className="btn btn-primary" href={next ? `#/level/${next.id}` : '#/'}>{next ? `Next: ${next.title}` : 'Return to the register'} <span aria-hidden="true">↗</span></a>
+          </section>
+        )}
       </div>
 
-      <ol className="level-workflow" aria-label="Level workflow">
-        <li><span>1</span> Learn</li>
-        <li><span>2</span> Reproduce</li>
-        <li><span>3</span> Repair</li>
-        <li className={isComplete ? 'done' : 'current'}><span>4</span> Verify</li>
-      </ol>
+      <div className="notebook-layout">
+        <section className="incident-brief" aria-labelledby="report-title">
+          <div className="section-heading"><h2 id="report-title">Bug report</h2><span className="document-ref">BUG-{String(level.number).padStart(3, '0')}</span></div>
+          <p className="symptom">{level.symptom}</p>
+          <div className="file-list">
+            <span className="hint-label">{level.vague ? 'Investigate this folder' : 'Where to look'}</span>
+            {level.files.map((file) => <code key={file}>{file}</code>)}
+          </div>
+        </section>
+
+        <details className="concept-entry" id="concept" tabIndex={-1}>
+          <summary><span>Read the concept</span><span className="concept-topic">{level.concept}</span></summary>
+          <div className="concept-content"><Prose paragraphs={level.lesson} /></div>
+        </details>
+
+        <div className="working-area">
+          <section className="preview-entry" aria-labelledby="live-preview">
+            <div className="section-heading">
+              <h2 id="live-preview" tabIndex={-1}>Live preview</h2>
+              <button className="quiet-button" aria-describedby="preview-restart-note" onClick={() => setDemoKey((key) => key + 1)}>Restart preview</button>
+            </div>
+            <p className="section-note">Reproduce the report here. Edit the source in your editor; changes hot-reload.</p>
+            <div className="demo-stage"><ExercisePreview key={demoKey} level={level} /></div>
+            <p className="section-note restart-note" id="preview-restart-note">Restarting reloads the exercise, clearing its component state and timers. Your source files and progress stay intact.</p>
+          </section>
+          <ChecksRunner level={level} onAllPass={onComplete} isComplete={isComplete} continuation={isComplete && (
+            <a className="text-link" href={next ? `#/level/${next.id}` : '#/'}>{next ? `Next incident: ${next.title}` : 'Return to the register'} <span aria-hidden="true">↗</span></a>
+          )} />
+        </div>
+
+        <HintBox levelId={level.id} />
+      </div>
 
       {isComplete && (
-        <>
-          <div className="success-banner">
-            <div className="msg">
-              <strong>✓ Incident resolved</strong>
-              <span>
-                {next
-                  ? 'The blocker is cleared — the next level is unlocked.'
-                  : 'That was the last one. Season 1 complete!'}
-              </span>
-            </div>
-            {next ? (
-              <button className="btn btn-primary" onClick={() => navigate(`/level/${next.id}`)}>
-                Next: {next.title} →
-              </button>
-            ) : (
-              <button className="btn btn-primary" onClick={() => navigate('/')}>
-                Back to the map 🏆
-              </button>
-            )}
-          </div>
-          <section className="resolution-review" aria-labelledby="resolution-review-title">
-            <div>
-              <span className="review-kicker">Post-incident review</span>
-              <h2 id="resolution-review-title">Make the fix stick.</h2>
-              <p>
-                Before moving on, explain what React was doing, why your change corrected it,
-                and which signal helped you find it.
-              </p>
-            </div>
-            <ul>
-              {level.checks.map((check) => <li key={check.name}>{check.name}</li>)}
-            </ul>
-          </section>
-        </>
+        <section className="resolution-review" aria-labelledby="review-title">
+          <h2 id="review-title">Make the fix stick.</h2>
+          <p>Before moving on, explain what React was doing, why your change corrected it, and which signal helped you find it.</p>
+          <ul>{level.checks.map((check) => <li key={check.name}>{check.name}</li>)}</ul>
+        </section>
       )}
-
-      <div className="level-layout">
-        <div className="column column-brief">
-          <div className="panel panel-concept">
-            <h3>Concept</h3>
-            <Prose paragraphs={level.lesson} />
-          </div>
-
-          <div className="panel bug-report">
-            <h3>Bug report</h3>
-            <div className="ticket-meta">
-              <span className="ticket-id">BUG-{String(level.number).padStart(3, '0')}</span>
-              <span>·</span>
-              <span>SEV: {level.severity.toUpperCase()}</span>
-              <span>·</span>
-              <span className={isComplete ? 'ticket-resolved' : 'ticket-open'}>
-                <span className={`status-dot ${isComplete ? 'ok' : 'err live'}`} />{' '}
-                {isComplete ? 'RESOLVED' : 'OPEN'}
-              </span>
-            </div>
-            <p className="symptom">{level.symptom}</p>
-            <div className="file-list">
-              <span className="hint-label">
-                {level.vague ? 'The bug is somewhere in here:' : 'Where to look:'}
-              </span>
-              {level.files.map((f) => (
-                <code key={f}>{f}</code>
-              ))}
-            </div>
-          </div>
-
-          <HintBox levelId={level.id} />
-        </div>
-
-        <div className="column column-workspace">
-          <div className="panel panel-demo demo-panel">
-            <h3>Live preview</h3>
-            <p className="demo-note">
-              This is the real buggy component — interact with it and reproduce the report.
-              Your edits hot-reload here.
-            </p>
-            <div className="demo-stage">
-              <ErrorBoundary key={demoKey}>
-                <Demo />
-              </ErrorBoundary>
-            </div>
-            <div className="demo-toolbar">
-              <button className="btn" onClick={() => setDemoKey((k) => k + 1)}>
-                ↻ Remount
-              </button>
-            </div>
-          </div>
-
-          <ChecksRunner level={level} onAllPass={onComplete} />
-        </div>
-      </div>
     </main>
   );
 }

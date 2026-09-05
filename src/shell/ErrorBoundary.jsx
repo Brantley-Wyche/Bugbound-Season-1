@@ -14,10 +14,10 @@ export default class ErrorBoundary extends Component {
     if (this.state.error) {
       return (
         <div className="demo-crash">
-          <strong>💥 The component crashed</strong>
+          <strong>The component crashed</strong>
           <pre>{String(this.state.error?.message || this.state.error)}</pre>
           <button className="btn" onClick={() => this.setState({ error: null })}>
-            Try again
+            Retry after editing
           </button>
         </div>
       );

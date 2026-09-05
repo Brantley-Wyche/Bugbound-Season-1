@@ -13,18 +13,15 @@ export default function HintBox({ levelId }) {
   const encoded = hints[levelId] || [];
 
   const toggleHint = (index) => {
-    setRevealed((prev) => {
-      if (!prev[index]) recordHintReveal(levelId, index + 1);
-      return prev.map((value, itemIndex) => (itemIndex === index ? !value : value));
-    });
+    if (!revealed[index]) recordHintReveal(levelId, index + 1);
+    setRevealed((prev) => prev.map((value, itemIndex) => (itemIndex === index ? !value : value)));
   };
 
   return (
-    <div className="panel panel-hints">
-      <h3>Hints</h3>
+    <section className="hint-entry" aria-labelledby="hints">
+      <h2 id="hints" tabIndex={-1}>A little help, when you need it.</h2>
       <p className="hints-note">
-        Hints are stored encoded so you can't spoil yourself by accident. Reveal them one at a
-        time — a real debugging attempt first is worth more than all three combined.
+        Start with a nudge. Each hint reveals a little more; open only as much as you need.
       </p>
       <div className="hint-list">
         {encoded.map((b64, i) => (
@@ -38,14 +35,12 @@ export default function HintBox({ levelId }) {
               <span>Hint {i + 1}</span>
               <span className="tier">{revealed[i] ? 'hide' : TIER_LABELS[i]}</span>
             </button>
-            {revealed[i] && (
-              <div className="hint-body" id={`${levelId}-hint-${i + 1}`}>
-                {decode(b64)}
-              </div>
-            )}
+            <div className="hint-body" id={`${levelId}-hint-${i + 1}`} hidden={!revealed[i]}>
+              {revealed[i] ? decode(b64) : null}
+            </div>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
