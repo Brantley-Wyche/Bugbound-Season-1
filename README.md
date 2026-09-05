@@ -79,6 +79,27 @@ Run these independently from the repository root (use `npm.cmd` on Windows if Po
 
 In-app check failures on the starting lessons are expected. The shell tests and curriculum validator preserve those deliberate bugs.
 
+## File guide
+
+```text
+src/
+  levels/                 One folder per lesson; your exercise edits go here
+  shell/                  App UI, progress storage, and exercise/check runtime
+    progression.js        Pure rules for unlocking lessons
+    progress.js           Saved completion and reset handling
+  styles/
+    global.css            Shared entry point; imports shell then exercise styles
+    shell.css             Notebook styles, shared tokens, and base defaults
+    exercises.css         Preserved .lv-* styles used by the lesson components
+tests/                    Node tests for the application infrastructure
+scripts/validate-levels.mjs  Curriculum structure validator
+public/fonts/             Self-hosted font and license
+index.html                Application entry point
+exercise.html             Disposable preview/check entry point
+```
+
+`src/levels/` is the learning cartridge. The shell, tests, and maintenance scripts support it. Both HTML entry points use the same ordered CSS imports so previews and checks share the same styling.
+
 ## Roadmap
 
 - **Season 1** *(this repo)* — Core React + TypeScript, 15 levels

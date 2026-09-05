@@ -1,8 +1,8 @@
 import { levels } from '../levels/index.js';
-import { isUnlocked } from './App.jsx';
+import { isUnlocked } from './progression.js';
 
 function IncidentRow({ level, completed }) {
-  const unlocked = isUnlocked(level, completed);
+  const unlocked = isUnlocked(level, completed, levels);
   const done = completed.has(level.id);
   const Tag = unlocked ? 'a' : 'div';
 
@@ -25,7 +25,7 @@ function IncidentRow({ level, completed }) {
 }
 
 export default function LevelMap({ completed }) {
-  const nextLevel = levels.find((level) => !completed.has(level.id) && isUnlocked(level, completed));
+  const nextLevel = levels.find((level) => !completed.has(level.id) && isUnlocked(level, completed, levels));
   const completedCount = levels.filter((level) => completed.has(level.id)).length;
   const allDone = completedCount === levels.length;
 

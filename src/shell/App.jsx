@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { levels } from '../levels/index.js';
 import { loadProgress, saveCompleted, clearProgress, isProgressStorageKey } from './progress.js';
+import { isUnlocked } from './progression.js';
 import LevelMap from './LevelMap.jsx';
 import LevelPage from './LevelPage.jsx';
 
@@ -19,12 +20,6 @@ function useHashRoute() {
 export function navigate(path) {
   window.location.hash = path;
   window.scrollTo(0, 0);
-}
-
-export function isUnlocked(level, completed) {
-  if (level.number === 1) return true;
-  const previous = levels.find((l) => l.number === level.number - 1);
-  return previous ? completed.has(previous.id) : false;
 }
 
 export default function App() {
@@ -75,7 +70,7 @@ export default function App() {
 
   const levelId = route.startsWith('#/level/') ? route.slice('#/level/'.length) : null;
   const activeLevel = levelId ? levels.find((l) => l.id === levelId) : null;
-  const showLevel = activeLevel && isUnlocked(activeLevel, completed);
+  const showLevel = activeLevel && isUnlocked(activeLevel, completed, levels);
 
   useEffect(() => {
     document.title = showLevel

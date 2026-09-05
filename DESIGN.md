@@ -374,6 +374,8 @@ Bugbound uses dark graphite, warm offwhite, and subdued amber to make debugging 
 
 The shell is restrained and readable beside an editor. Typography, alignment, and thin rules establish hierarchy; decorative cards and colored side-border sections are outside the approved direction. A prominent amber setup notice explains the desktop requirement while keeping lesson browsing available. This document records the implemented system in `src/styles/global.css` and `src/shell/`; it is a design reference, not a review report.
 
+`global.css` is the shared entry point. It imports `shell.css` (tokens, base defaults, and the notebook interface) followed by `exercises.css` (preserved `.lv-*` lesson styles). Keep that order for both the application and exercise runtime. Exercise-specific detector exceptions follow `exercises.css`; they do not suppress the shell.
+
 **Key Characteristics:**
 
 - Dark graphite surfaces with warm offwhite reading text.
