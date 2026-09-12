@@ -376,6 +376,8 @@ The shell is restrained and readable beside an editor. Typography, alignment, an
 
 `global.css` is the shared entry point. It imports `shell.css` (tokens, base defaults, and the notebook interface) followed by `exercises.css` (preserved `.lv-*` lesson styles). Keep that order for both the application and exercise runtime. Exercise-specific detector exceptions follow `exercises.css`; they do not suppress the shell.
 
+The header uses the owner-supplied `public/bugbound-icon.svg` at 30px beside the Bugbound wordmark. The browser tab uses `public/bugbound-favicon.svg`, the simplified small-size variant. Preserve their supplied artwork and colors.
+
 **Key Characteristics:**
 
 - Dark graphite surfaces with warm offwhite reading text.

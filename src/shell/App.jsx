@@ -88,10 +88,7 @@ export default function App() {
       }}>Skip to content</a>
       <header className="app-header">
         <a className="wordmark" href="#/" aria-label="Bugbound — incident register">
-          <svg className="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <path d="M6 4h16a4 4 0 0 1 4 4v20H10a4 4 0 0 1-4-4V4Z" stroke="currentColor" strokeWidth="2" />
-            <path d="M11 4v24M16 11h5M16 16h5" stroke="currentColor" strokeWidth="2" />
-          </svg>
+          <img className="brand-mark" src={`${import.meta.env.BASE_URL}bugbound-icon.svg`} width="30" height="30" alt="" aria-hidden="true" />
           <span>Bugbound</span>
         </a>
         <span className="season-label">Season 01 <span>/ React field notes</span></span>
