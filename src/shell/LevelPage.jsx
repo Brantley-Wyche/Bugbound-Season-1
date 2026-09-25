@@ -68,8 +68,8 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
           </div>
         </section>
 
-        <details className="concept-entry" id="concept">
-          <summary><span>Read the concept</span><span className="concept-topic">{level.concept}</span></summary>
+        <details className={`concept-entry${firstVisit ? ' is-suggested' : ''}`} id="concept">
+          <summary><span>{firstVisit ? 'Start here: read the concept' : 'Read the concept'}</span><span className="concept-topic">{level.concept}</span></summary>
           <div className="concept-content"><Prose paragraphs={level.lesson} /></div>
         </details>
 

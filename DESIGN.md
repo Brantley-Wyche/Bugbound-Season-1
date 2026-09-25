@@ -502,7 +502,7 @@ The current assignment's action reads Start Incident NN until the learner has ru
 
 ### Concept and hint disclosures
 
-The concept is a native `details` element, closed initially. Its summary has a minimum height of (56px), a native amber marker, and a muted topic beneath its main label. Opening it reveals continuous prose between thin horizontal rules.
+The concept is a native `details` element, closed initially. Until anything has been recorded, its summary reads "Start here: read the concept" in amber; it still starts closed, so the learner reads the crash first. Its summary has a minimum height of (56px), a native amber marker, and a muted topic beneath its main label. Opening it reveals continuous prose between thin horizontal rules.
 
 Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. The tier name stays visible while a hint is open, followed by "· Hide". A muted monospaced "opened before" mark shows tiers revealed in earlier visits only. The last tier gives the fix away, so the first time it is opened for an incident, whatever order the hints were read in, it shows a short muted warning and a Show the answer control instead of the hint; nothing is recorded until the learner confirms, and focus returns to the toggle. After that it opens directly, including on later visits. Their appearance remains part of the document, with no side-border card.
 
@@ -520,11 +520,11 @@ The workbench heads the right column: a muted label over a monospaced status on 
 
 Its label is Verification before a run and Last run after one. The status reads the checks still to pass, Not run this visit, Running the checks, or the run number with its passed count (coral when a check fails, sage when all pass, "resolved" on the resolving run). After a run the status is a native button with a dotted underline that scrolls to and focuses the run summary in the log, clear of the pinned workbench. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation. Pressing it during a run announces that the checks are already running through a visually hidden status region.
 
-Ctrl+Enter (⌘ Enter on a Mac) runs the checks from anywhere in the shell except form fields and links, which keep their own Enter behavior. The button exposes it through `aria-keyshortcuts` and a title, and the log's idle and last-run notes mention it in a `kbd` element; touch-first devices hide those mentions.
+Ctrl+Enter (⌘ Enter on a Mac) runs the checks from anywhere in the shell except form fields and links, which keep their own Enter behavior. The button exposes it through `aria-keyshortcuts` (no `title`, which some tools promote to the accessible name), and the log's idle and last-run notes mention it in a `kbd` element; touch-first devices hide those mentions.
 
 ### Live preview and verification
 
-The preview is the one outlined inset stage, using the frontmatter preview surface, radius, and padding; mobile padding is (16px). Its boundary contains a titled, borderless iframe with the intentionally broken component and any caught crash. The quiet Restart preview button is connected by `aria-describedby` to the note beneath the stage: restarting reloads the preview, clearing component state and timers while source files and progress stay intact.
+The preview is the one outlined inset stage, using the frontmatter preview surface, radius, and padding; mobile padding is (16px). Its boundary contains a titled, borderless iframe with the intentionally broken component and any caught crash. The crash heading and message sit in a `role="alert"` region, with the Retry after editing button outside it, so reproducing the crash is announced rather than sight-only; a retry after each hot update announces a crash that is still there. The quiet Restart preview button is connected by `aria-describedby` to the note beneath the stage: restarting reloads the preview, clearing component state and timers while source files and progress stay intact.
 
 The note above the stage follows the incident's state. An open incident asks the learner to reproduce the report. A resolved incident not yet checked this visit says it was resolved earlier and that the preview shows the source as it is now, so a crash on a pristine checkout never contradicts the Resolved label without explanation. After a run it simply says the preview shows the current source.
 
@@ -538,7 +538,7 @@ Whenever the incident is complete, "Make the fix stick." follows in the log: an 
 
 On later visits the log's empty state says no checks have run in this visit, followed by a standing note: Resolved with the date after N runs; that record stays, and a new run checks the source as it is now. A later failing run keeps the resolution and says so: Your resolution from that date still stands, and the current source fails N checks. Saved completion is never a claim that current source passes. The Next continuation lives in the workbench whenever the incident is complete and checks are not running.
 
-When a completion write fails, a storage notice above the main content uses the existing error-colored full outline, (20px) padding, and a native retry button. The notice announces its message through status semantics. Retry saving progress and Retry reset identify the failed operation accurately. Reset confirmation occurs before the initial reset; retrying an already-confirmed failure does not ask again.
+When a completion write fails, a storage notice above the main content uses the existing error-colored full outline, (20px) padding, and a native retry button. The notice announces its message through status semantics. Retry saving progress and Retry reset identify the failed operation accurately. Reset asks in place rather than through a browser dialog: Reset progress becomes a labelled group with the question (later incidents lock again, Incident 01 stays open, field notes are kept), an error-colored Clear progress, and Cancel. Focus moves to Cancel; Escape or Cancel restores the Reset control and its focus; Clear progress resets and returns to the register. At (600px) and below the question takes its own full-width line in the footer. Retrying an already-confirmed failed reset does not ask again.
 
 ### Field notes
 
@@ -570,7 +570,7 @@ The shell has no general-purpose input, tag, or card primitive. The `lv-` contro
 - **Do** distinguish saved completion from last-run verification and keep the continuation in the workbench.
 - **Do** call the unit an incident in interface copy.
 - **Do** draw arrows with the shared stroked `Arrow` SVG rather than typing arrow glyphs into calls to action or the back link.
-- **Do** keep all shell text at (12px) or larger.
+- **Do** keep all shell text at (12px) or larger, and cap small explanatory notes at a measure of (60ch).
 - **Do** show keyboard shortcuts in a bordered monospaced `kbd`, and only where a keyboard is likely.
 
 ### Don't:

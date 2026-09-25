@@ -18,8 +18,11 @@ export default class ErrorBoundary extends Component {
     if (this.state.error) {
       return (
         <div className="demo-crash">
-          <strong>The component crashed</strong>
-          <pre>{String(this.state.error?.message || this.state.error)}</pre>
+          {/* Announced, so reproducing the crash is not a sight-only step. */}
+          <div role="alert">
+            <strong>The component crashed</strong>
+            <pre>{String(this.state.error?.message || this.state.error)}</pre>
+          </div>
           <button className="btn" onClick={() => this.retry()}>
             Retry after editing
           </button>

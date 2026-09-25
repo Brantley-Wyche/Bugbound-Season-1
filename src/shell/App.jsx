@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { levels } from '../levels/index.js';
 import { loadProgress, saveCompleted, clearProgress, isProgressStorageKey } from './progress.js';
 import { isUnlocked } from './progression.js';
@@ -20,6 +20,36 @@ function useHashRoute() {
 export function navigate(path) {
   window.location.hash = path;
   window.scrollTo(0, 0);
+}
+
+/** Reset asks in place: the question and both answers replace the control, with focus kept on them. */
+function ResetControl({ onReset }) {
+  const [confirming, setConfirming] = useState(false);
+  const trigger = useRef(null);
+  const cancelButton = useRef(null);
+  const returnFocus = useRef(false);
+
+  useEffect(() => {
+    if (confirming) cancelButton.current?.focus();
+    else if (returnFocus.current) trigger.current?.focus();
+    returnFocus.current = false;
+  }, [confirming]);
+
+  const cancel = () => {
+    returnFocus.current = true;
+    setConfirming(false);
+  };
+
+  if (!confirming) {
+    return <button ref={trigger} className="link-button" onClick={() => setConfirming(true)}>Reset progress</button>;
+  }
+  return (
+    <div className="reset-confirm" role="group" aria-labelledby="reset-question" onKeyDown={(event) => { if (event.key === 'Escape') cancel(); }}>
+      <span id="reset-question">Clear saved completion? Later incidents lock again; Incident 01 stays open. Field notes are kept.</span>
+      <button className="link-button reset-clear" onClick={() => { setConfirming(false); onReset(); }}>Clear progress</button>
+      <button ref={cancelButton} className="link-button reset-cancel" onClick={cancel}>Cancel</button>
+    </div>
+  );
 }
 
 export default function App() {
@@ -56,16 +86,15 @@ export default function App() {
 
   const markComplete = id => persist(new Set([...completed, id]), progress.generation);
 
-  const resetProgress = (askConfirmation = true) => {
-    if (!askConfirmation || window.confirm('Clear saved completion? Later incidents will lock again; Incident 01 stays open.')) {
-      const result = clearProgress();
-      if (result.status === 'error') {
-        setProgress(previous => ({ ...previous, error: result.error, errorAction: 'reset' }));
-        return;
-      }
-      setProgress(result.progress);
-      navigate('/');
+  // Confirmation happens in ResetControl; a retry after a failed reset was already confirmed.
+  const resetProgress = () => {
+    const result = clearProgress();
+    if (result.status === 'error') {
+      setProgress(previous => ({ ...previous, error: result.error, errorAction: 'reset' }));
+      return;
     }
+    setProgress(result.progress);
+    navigate('/');
   };
 
   const levelId = route.startsWith('#/level/') ? route.slice('#/level/'.length) : null;
@@ -131,7 +160,7 @@ export default function App() {
       {progress.error && (
         <aside className="storage-notice" role="status">
           <p>{progress.error}</p>
-          <button className="btn" onClick={() => progress.errorAction === 'reset' ? resetProgress(false) : persist(completed, progress.generation)}>
+          <button className="btn" onClick={() => progress.errorAction === 'reset' ? resetProgress() : persist(completed, progress.generation)}>
             {progress.errorAction === 'reset' ? 'Retry reset' : 'Retry saving progress'}
           </button>
         </aside>
@@ -151,9 +180,7 @@ export default function App() {
 
       <footer className="app-footer">
         <span>Bugbound / Season 01<br /><span className="footer-credit">React + Vite · Incidents &amp; bugs by Claude</span></span>
-        <button className="link-button" onClick={() => resetProgress()}>
-          Reset progress
-        </button>
+        <ResetControl onReset={resetProgress} />
       </footer>
     </div>
   );
