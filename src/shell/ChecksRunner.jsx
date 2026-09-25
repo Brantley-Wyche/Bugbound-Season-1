@@ -122,7 +122,7 @@ export function Workbench({ level, checks, isComplete, next }) {
       </p>
       <div className="workbench-actions">
         {/* One button in every state keeps keyboard focus through a run; runAll ignores repeat presses. */}
-        <button id="run-checks" className={`btn${isComplete ? '' : ' btn-primary'}`} onClick={checks.runAll} aria-disabled={checks.running} aria-keyshortcuts="Control+Enter Meta+Enter" title={RUN_SHORTCUT}>
+        <button id="run-checks" className={`btn${isComplete ? '' : ' btn-primary'}`} onClick={checks.runAll} aria-disabled={checks.running} aria-keyshortcuts="Control+Enter Meta+Enter">
           {label}
         </button>
         {isComplete && (

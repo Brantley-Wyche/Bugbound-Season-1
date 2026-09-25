@@ -30,7 +30,7 @@ function IncidentRow({ level, completed, activity }) {
         <span className="incident-concept">{level.concept}</span>
         <span className={`incident-status ${done ? 'state-ok' : unlocked ? 'state-open' : ''}`}>
           {done ? 'Resolved' : unlocked ? 'Open' : 'Locked'}
-          {!unlocked && <span className="sr-only"> — resolve the previous incident to unlock</span>}
+          {!unlocked && <span className="sr-only">. Resolve the previous incident to unlock it.</span>}
         </span>
       </Tag>
     </li>
