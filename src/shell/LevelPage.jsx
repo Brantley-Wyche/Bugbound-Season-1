@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { levels } from '../levels/index.js';
+import { activityFor, getLearningSnapshot, subscribeLearning } from './learning.js';
+import { formatDay } from './format.js';
 import Prose from './Prose.jsx';
 import ExercisePreview from './ExercisePreview.jsx';
-import ChecksRunner from './ChecksRunner.jsx';
+import { useCheckRuns, Workbench, VerificationLog } from './ChecksRunner.jsx';
+import FieldNotes from './FieldNotes.jsx';
 import HintBox from './HintBox.jsx';
 
 function jumpToSection(id) {
@@ -17,13 +20,16 @@ function jumpToSection(id) {
 export default function LevelPage({ level, isComplete, isSaved = isComplete, onComplete }) {
   const [demoKey, setDemoKey] = useState(0);
   const next = levels.find((item) => item.number === level.number + 1);
+  const activity = activityFor(useSyncExternalStore(subscribeLearning, getLearningSnapshot).levels, level.id);
+  const checks = useCheckRuns(level, { isComplete, onAllPass: onComplete });
+  const folio = String(level.number).padStart(2, '0');
 
   return (
     <main id="main-content" tabIndex={-1}>
       <header className="level-header">
         <a className="back-link" href="#/">← Incident register</a>
         <div className="level-heading">
-          <span className="folio-number" aria-label={`Level ${level.number}`}>{String(level.number).padStart(2, '0')}</span>
+          <span className="folio-number"><span className="sr-only">Incident </span>{folio}</span>
           <div>
             <h1 id="page-title" tabIndex={-1}>{level.title}</h1>
             <p className="level-metadata"><span>{level.concept}</span><span>Severity: {level.severity}</span><span className={isComplete ? 'state-ok' : 'state-open'}>{isComplete ? (isSaved ? 'Completion saved' : 'Completed this visit') : 'Open'}</span></p>
@@ -32,26 +38,17 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
         <nav className="section-nav" aria-label="In this incident">
           <button type="button" onClick={() => jumpToSection('concept')}>Read the concept</button>
           <button type="button" onClick={() => jumpToSection('live-preview')}>Try the preview</button>
-          <button type="button" onClick={() => jumpToSection('checks')}>Run the checks</button>
+          <button type="button" onClick={() => jumpToSection('run-checks')}>Run the checks</button>
           <button type="button" onClick={() => jumpToSection('hints')}>Get a hint</button>
         </nav>
       </header>
 
-      <div aria-live="polite" aria-atomic="true">
-        {isComplete && (
-          <section className="resolution" aria-labelledby="resolution-title">
-            <div>
-              <h2 id="resolution-title">Resolution recorded.</h2>
-              <p>{isSaved ? 'Your earned progress is saved.' : 'Your fix passed in this visit, but progress has not been saved.'} Run the checks to verify your current source.</p>
-            </div>
-            <a className="btn btn-primary" href={next ? `#/level/${next.id}` : '#/'}>{next ? `Next: ${next.title}` : 'Return to the register'} <span aria-hidden="true">↗</span></a>
-          </section>
-        )}
-      </div>
-
       <div className="notebook-layout">
         <section className="incident-brief" aria-labelledby="report-title">
-          <div className="section-heading"><h2 id="report-title">Bug report</h2><span className="document-ref">BUG-{String(level.number).padStart(3, '0')}</span></div>
+          <div className="section-heading">
+            <h2 id="report-title">Bug report</h2>
+            <span className="document-ref">BUG-{String(level.number).padStart(3, '0')}{isComplete && <span className="state-ok"> · Closed{activity.resolvedAt ? ` ${formatDay(activity.resolvedAt)}` : ''}</span>}</span>
+          </div>
           <p className="symptom">{level.symptom}</p>
           <div className="file-list">
             <span className="hint-label">{level.vague ? 'Investigate this folder' : 'Where to look'}</span>
@@ -65,6 +62,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
         </details>
 
         <div className="working-area">
+          <Workbench level={level} checks={checks} isComplete={isComplete} activity={activity} next={next} />
           <section className="preview-entry" aria-labelledby="live-preview">
             <div className="section-heading">
               <h2 id="live-preview" tabIndex={-1}>Live preview</h2>
@@ -72,14 +70,13 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
             </div>
             <p className="section-note">Reproduce the report here. Edit the source in your editor; changes hot-reload.</p>
             <div className="demo-stage"><ExercisePreview key={demoKey} level={level} /></div>
-            <p className="section-note restart-note" id="preview-restart-note">Restarting reloads the exercise, clearing its component state and timers. Your source files and progress stay intact.</p>
+            <p className="section-note restart-note" id="preview-restart-note">Restarting reloads the preview, clearing its component state and timers. Your source files and progress stay intact.</p>
           </section>
-          <ChecksRunner level={level} onAllPass={onComplete} isComplete={isComplete} continuation={isComplete && (
-            <a className="text-link" href={next ? `#/level/${next.id}` : '#/'}>{next ? `Next incident: ${next.title}` : 'Return to the register'} <span aria-hidden="true">↗</span></a>
-          )} />
+          <VerificationLog level={level} checks={checks} isComplete={isComplete} isSaved={isSaved} activity={activity} />
         </div>
 
-        <HintBox levelId={level.id} />
+        <FieldNotes activity={activity} isComplete={isComplete} />
+        <HintBox levelId={level.id} openedBefore={activity.hintsRevealed} />
       </div>
 
       {isComplete && (

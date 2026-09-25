@@ -14,5 +14,5 @@ export default function ExercisePreview({ level }) {
     window.addEventListener('message', resize);
     return () => window.removeEventListener('message', resize);
   }, []);
-  return <iframe ref={frame} className="exercise-frame" src={exerciseURL(level.id, 'preview')} title={`${level.title}: interactive exercise preview`} style={{ height }} />;
+  return <iframe ref={frame} className="exercise-frame" src={exerciseURL(level.id, 'preview')} title={`${level.title}: live preview`} style={{ height }} />;
 }

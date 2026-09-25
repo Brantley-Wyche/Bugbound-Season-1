@@ -282,7 +282,7 @@ typography:
     lineHeight: 1.65
   resolution-title:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
-    fontSize: "28px"
+    fontSize: "21px"
     fontWeight: 600
     lineHeight: 1.3
     letterSpacing: "-0.02em"
@@ -291,6 +291,16 @@ typography:
     fontSize: "14px"
     fontWeight: 400
     lineHeight: 1.65
+  workbench-value:
+    fontFamily: "'Cascadia Mono', Consolas, ui-monospace, monospace"
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.5
+  record:
+    fontFamily: "'Cascadia Mono', Consolas, ui-monospace, monospace"
+    fontSize: "12px"
+    fontWeight: 400
+    lineHeight: 1.6
   inline-code:
     fontFamily: "'Cascadia Mono', Consolas, ui-monospace, monospace"
     fontSize: "0.87em"
@@ -352,10 +362,14 @@ components:
     padding: "24px"
   desktop-notice-mobile:
     padding: "20px"
-  saved-resolution:
+  workbench:
+    backgroundColor: "{colors.bg}"
+    typography: "{typography.workbench-value}"
+    padding: "14px 0"
+  log-resolution:
     textColor: "{colors.ok}"
     typography: "{typography.resolution-title}"
-    padding: "24px 0"
+    padding: "20px 0 0"
   inline-code:
     backgroundColor: "{colors.bg-soft}"
     textColor: "{colors.info}"
@@ -387,6 +401,9 @@ The header uses the owner-supplied `public/bugbound-icon.svg` at 30px beside the
 - Native navigation and optional disclosure within a continuous document.
 - A prominent desktop setup notice that preserves lesson browsing.
 - Saved completion distinguished from the most recent verification run.
+- The learner's own record: numbered runs, field notes, and closed dates from local telemetry.
+
+**The Incident Naming Rule.** The unit of work is an *incident* in every piece of interface copy: Start Incident 01, Next incident, Later incidents will lock again. "Level" remains the code and manifest term, and "lesson" or "exercise" are not used as names for the unit. The broken code is "the component" or "the source"; the frame is "the preview".
 
 ## Colors
 
@@ -437,7 +454,7 @@ The application has a centered maximum width of (1200px), with desktop horizonta
 
 The register introduction uses two columns. Incident rows align a number, title, concept, and right-aligned text status on continuous horizontal rules. The current incident gains stronger title weight and amber numbering rather than a surrounding card.
 
-The lesson is one document. Above (900px), the report, concept disclosure, and hints occupy the left column while preview and verification occupy the right; the ratio is (1 : 1.1), with a normal column gap of (64px). At or below (900px), sections follow their DOM order in one column: report, concept, preview and checks, then hints.
+The lesson is one document. Above (900px), the report, concept disclosure, field notes, and hints occupy the left column while the workbench, preview, and verification log occupy the right; the ratio is (1 : 1.1), with a normal column gap of (64px). The right column stretches to the full layout height so the workbench can stay pinned while the learner reads. Above (900px) every section is visible, so the section jumps are hidden and the lesson heading carries its own bottom rule. At or below (900px), sections follow their DOM order in one column: report, concept, workbench with preview and log, field notes, then hints, and the section jumps return.
 
 At or below (1050px), column gaps tighten to (36px) and the long season descriptor disappears. At or below (900px), page padding becomes (32px). At or below (600px), padding becomes (20px), the introduction stacks, incident concepts move below their titles, section navigation becomes two columns, and progress moves to its own header row. The prominent desktop setup notice has its own visibility condition: on a device matching both `hover: none` and `pointer: coarse`, including wider touch-first tablets, or at or below (600px). Narrow fine-pointer desktop windows beside an editor do not show it. It sits below the header and above either page. At (600px) and below, its icon stacks over the text and its padding reduces from (24px) to (20px). It does not block browsing.
 
@@ -467,7 +484,7 @@ Interactive elements use a (2px) amber focus outline offset by (4px); linked reg
 
 ### Navigation
 
-The linked wordmark returns to the register. The lesson back link remains a native anchor. Section jumps use native buttons with generous vertical hit areas, muted text at rest, and amber underlined text on hover. A section jump scrolls to and focuses its target without changing the hash route; the concept target also opens its native disclosure.
+The linked wordmark returns to the register. The lesson back link remains a native anchor. Section jumps appear at or below (900px) as native buttons with generous vertical hit areas, muted text at rest, and amber underlined text on hover. A section jump scrolls to and focuses its target without changing the hash route; the concept target opens its native disclosure and focuses its summary, and Run the checks focuses the workbench's Run button.
 
 A skip link appears on focus. Route changes focus the page title. Do not replace these interactions with visual-only click targets.
 
@@ -477,29 +494,41 @@ Section jumps use native buttons that scroll and focus the target without changi
 
 Rows are ruled list entries, with a minimum height of (64px). Available entries are links; locked entries remain visible non-interactive rows. Resolved and open entries have explicit status labels. Hover only applies to linked rows. Mobile keeps the number and status aligned while placing the concept under the title.
 
+Open and resolved rows carry a muted monospaced record note under the title once the learner has worked on them: runs and hints, then "last worked" for open incidents or "Closed" with the date for resolved ones. Locked rows and untouched incidents show no note.
+
 ### Concept and hint disclosures
 
 The concept is a native `details` element, closed initially. Its summary has a minimum height of (56px), a native amber marker, and a muted topic beneath its main label. Opening it reveals continuous prose between thin horizontal rules.
 
-Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. Their appearance remains part of the document, with no side-border card.
+Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. A muted monospaced "opened" mark shows tiers the learner has revealed before. Their appearance remains part of the document, with no side-border card.
 
 ### Desktop setup notice
 
-A full amber surface with dark graphite text and the shared stage radius carries the desktop requirement. The heading is followed by the local editor, Vite recompilation, and desktop-browser workflow, then a semibold reassurance that lessons remain browsable. The inline monitor SVG is (32px). It is a labelled aside rather than an overlay or disabled-state screen. Preserve the source visibility condition described in Layout.
+A full amber surface with dark graphite text and the shared stage radius carries the desktop requirement. The heading is followed by the local editor, Vite recompilation, and desktop-browser workflow, then a semibold reassurance that the register and any open incident remain readable. The inline monitor SVG is (32px). It is a labelled aside rather than an overlay or disabled-state screen. Preserve the source visibility condition described in Layout.
+
+### Workbench
+
+The workbench heads the right column: a muted label over a monospaced status on the left, the verification actions on the right, and a strong bottom rule over the page background. At (601px) and above it is sticky at the top of the working column, so the latest result and the next action stay in reach while the learner reads the report or scrolls the log; content inside the working column scrolls into view clear of it. At or below (600px) it sits in flow and its actions wrap.
+
+Its status reads Not run this visit, Running the checks, Last run with the run number and passed count (coral when a check fails, sage when all pass), or Resolved on run N / Resolved with the date. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation.
 
 ### Live preview and verification
 
-The preview is the one outlined inset stage, using the frontmatter preview surface, radius, and padding; mobile padding is (16px). Its boundary contains a titled, borderless iframe with the intentionally broken exercise and any caught crash. The quiet Restart preview button is connected by `aria-describedby` to the note beneath the stage: restarting reloads the exercise, clearing component state and timers while source files and progress stay intact.
+The preview is the one outlined inset stage, using the frontmatter preview surface, radius, and padding; mobile padding is (16px). Its boundary contains a titled, borderless iframe with the intentionally broken component and any caught crash. The quiet Restart preview button is connected by `aria-describedby` to the note beneath the stage: restarting reloads the preview, clearing component state and timers while source files and progress stay intact.
 
-Verification is a ruled log beneath the preview. Each row aligns a compact textual status with its check name. Error messages use wrapping monospaced text. Passing, failing, and pending are separate readable states; the results region announces updates politely. A semibold Last run summary reports the passed count after a run finishes; the accompanying note states that results describe that run and must be refreshed after source edits. The live region remains present when empty.
+Verification is a ruled log beneath the preview. Each row aligns a compact textual status with its check name. Error messages use wrapping monospaced text. Passing, failing, and pending are separate readable states; the results region announces updates politely and remains present when empty. After a run, a semibold summary names the run number and time with the passed count. Earlier runs from this visit follow as a muted monospaced list.
 
-### Saved completion and continuation
+### Resolution and continuation
 
-The saved-completion summary uses a sage heading, muted explanatory copy, a thin bottom rule, and the existing primary continuation link. Its language is historical: Resolution recorded and Completion saved. It invites checking the current source without promising restored result history. An empty log on a completed visit explicitly says no checks have run in this visit. Saved completion is not a claim that current source passes.
+Resolution is recorded where the work happened, not in a banner above the page. The run that first completes an incident ends the log with a sage rule, a sage Resolved heading, and a muted record: when, after how many runs and hints, and whether progress was saved. A persistent polite, atomic live region announces it. The bug report reference gains a sage Closed mark with the date, and the metadata reads Completion saved, or Completed this visit when the write failed.
 
-When a completion write fails, the metadata says Completed this visit and the summary explicitly says progress has not been saved. A storage notice above the main content uses the existing error-colored full outline, (20px) padding, and a native retry button. The notice announces its message through status semantics. Retry saving progress and Retry reset identify the failed operation accurately. Reset confirmation occurs before the initial reset; retrying an already-confirmed failure does not ask again.
+On later visits the log's empty state says no checks have run in this visit, followed by a standing note: Resolved with the date after N runs; that record stays, and a new run checks the source as it is now. A later failing run keeps the resolution and says so: Your resolution from that date still stands, and the current source fails N checks. Saved completion is never a claim that current source passes. The Next continuation lives in the workbench whenever the incident is complete and checks are not running.
 
-An additional native text continuation link sits beside the verification workflow, below its results and last-run note, whenever the incident is complete (saved, or earned this visit but unsaved) and checks are not running. Saved completion and the last-run results can coexist even when a later check fails. The saved-completion announcement uses a persistent polite, atomic live region.
+When a completion write fails, a storage notice above the main content uses the existing error-colored full outline, (20px) padding, and a native retry button. The notice announces its message through status semantics. Retry saving progress and Retry reset identify the failed operation accurately. Reset confirmation occurs before the initial reset; retrying an already-confirmed failure does not ask again.
+
+### Field notes
+
+Your field notes sits in the left column between the concept and hints: an (18px) heading and a ruled definition list with muted labels and monospaced values for check runs, hints opened by tier name, last worked, and the resolution date. Values come only from local telemetry (`learning.js`), which records runs, hint tiers, timestamps, and the run that first resolved the incident. Before any activity it shows a single muted sentence instead of an empty list. Hint text is never shown here.
 
 ### Progress
 
@@ -520,7 +549,9 @@ The shell has no general-purpose input, tag, or card primitive. The `lv-` contro
 - **Do** retain readable wrapping and the single-column lesson order on narrow screens.
 - **Do** implement the shell with simple React and plain CSS.
 - **Do** make the desktop setup requirement prominent while allowing lesson browsing.
-- **Do** distinguish saved completion from last-run verification and keep continuation beside the log.
+- **Do** distinguish saved completion from last-run verification and keep the continuation in the workbench.
+- **Do** call the unit an incident in interface copy.
+- **Do** draw arrows with the shared stroked `Arrow` SVG rather than typing arrow glyphs into calls to action.
 
 ### Don't:
 

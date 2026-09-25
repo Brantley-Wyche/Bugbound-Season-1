@@ -57,7 +57,7 @@ export default function App() {
   const markComplete = id => persist(new Set([...completed, id]), progress.generation);
 
   const resetProgress = (askConfirmation = true) => {
-    if (!askConfirmation || window.confirm('Clear saved completion? Later levels will lock again; Level 1 stays available.')) {
+    if (!askConfirmation || window.confirm('Clear saved completion? Later incidents will lock again; Incident 01 stays open.')) {
       const result = clearProgress();
       if (result.status === 'error') {
         setProgress(previous => ({ ...previous, error: result.error, errorAction: 'reset' }));
@@ -122,9 +122,9 @@ export default function App() {
           <path d="M16 22v6M10 28h12" stroke="currentColor" strokeWidth="2" />
         </svg>
         <div>
-          <h2 id="desktop-notice-title">Use a desktop to work on the exercises.</h2>
+          <h2 id="desktop-notice-title">Use a desktop to work on the incidents.</h2>
           <p>Bugbound is a desktop-first project. To fix bugs, edit the actual source files in a local code editor, let Vite recompile the app, then run the checks in a desktop browser.</p>
-          <p className="desktop-notice-browse">You can still browse the lessons here.</p>
+          <p className="desktop-notice-browse">You can still read the register and any open incident here.</p>
         </div>
       </aside>
 
@@ -150,7 +150,7 @@ export default function App() {
       )}
 
       <footer className="app-footer">
-        <span>Bugbound / Season 01<br /><span className="footer-credit">React + Vite · Levels &amp; bugs by Claude</span></span>
+        <span>Bugbound / Season 01<br /><span className="footer-credit">React + Vite · Incidents &amp; bugs by Claude</span></span>
         <button className="link-button" onClick={() => resetProgress()}>
           Reset progress
         </button>

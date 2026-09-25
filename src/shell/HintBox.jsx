@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import hints from '../levels/hints.json';
-import { recordHintReveal } from './learning.js';
-
-const TIER_LABELS = ['Gentle nudge', 'Closer look', 'Basically the answer'];
+import { HINT_TIERS, recordHintReveal } from './learning.js';
 
 function decode(b64) {
   return new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)));
 }
 
-export default function HintBox({ levelId }) {
+export default function HintBox({ levelId, openedBefore = [] }) {
   const [revealed, setRevealed] = useState([false, false, false]);
   const encoded = hints[levelId] || [];
 
@@ -33,7 +31,8 @@ export default function HintBox({ levelId }) {
               aria-controls={`${levelId}-hint-${i + 1}`}
             >
               <span>Hint {i + 1}</span>
-              <span className="tier">{revealed[i] ? 'hide' : TIER_LABELS[i]}</span>
+              {openedBefore.includes(i + 1) && <span className="hint-opened">opened</span>}
+              <span className="tier">{revealed[i] ? 'hide' : HINT_TIERS[i]}</span>
             </button>
             <div className="hint-body" id={`${levelId}-hint-${i + 1}`} hidden={!revealed[i]}>
               {revealed[i] ? decode(b64) : null}

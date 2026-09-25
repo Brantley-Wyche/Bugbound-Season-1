@@ -1,10 +1,23 @@
+import { useSyncExternalStore } from 'react';
 import { levels } from '../levels/index.js';
 import { isUnlocked } from './progression.js';
+import { activityFor, getLearningSnapshot, subscribeLearning } from './learning.js';
+import { formatDay, plural } from './format.js';
+import Arrow from './Arrow.jsx';
 
-function IncidentRow({ level, completed }) {
+function rowNote({ checkRuns, hintsRevealed, lastPracticedAt, resolvedAt }, done) {
+  const work = [checkRuns && plural(checkRuns, 'run'), hintsRevealed.length && plural(hintsRevealed.length, 'hint')].filter(Boolean);
+  const parts = done
+    ? [resolvedAt && `Closed ${formatDay(resolvedAt)}`, ...work]
+    : work.length ? [...work, lastPracticedAt && `last worked ${formatDay(lastPracticedAt)}`] : [];
+  return parts.filter(Boolean).join(' · ') || null;
+}
+
+function IncidentRow({ level, completed, activity }) {
   const unlocked = isUnlocked(level, completed, levels);
   const done = completed.has(level.id);
   const Tag = unlocked ? 'a' : 'div';
+  const note = unlocked ? rowNote(activity, done) : null;
 
   return (
     <li>
@@ -13,7 +26,7 @@ function IncidentRow({ level, completed }) {
         href={unlocked ? `#/level/${level.id}` : undefined}
       >
         <span className="incident-number">{String(level.number).padStart(2, '0')}</span>
-        <span className="incident-name">{level.title}</span>
+        <span className="incident-name">{level.title}{note && <span className="row-note">{note}</span>}</span>
         <span className="incident-concept">{level.concept}</span>
         <span className={`incident-status ${done ? 'state-ok' : unlocked ? 'state-open' : ''}`}>
           {done ? 'Resolved' : unlocked ? 'Open' : 'Locked'}
@@ -25,6 +38,7 @@ function IncidentRow({ level, completed }) {
 }
 
 export default function LevelMap({ completed }) {
+  const telemetry = useSyncExternalStore(subscribeLearning, getLearningSnapshot).levels;
   const nextLevel = levels.find((level) => !completed.has(level.id) && isUnlocked(level, completed, levels));
   const completedCount = levels.filter((level) => completed.has(level.id)).length;
   const allDone = completedCount === levels.length;
@@ -38,7 +52,7 @@ export default function LevelMap({ completed }) {
           <button type="button" className="text-link" onClick={() => {
             document.getElementById('incident-register')?.scrollIntoView();
             document.getElementById('incident-register')?.focus({ preventScroll: true });
-          }}>Browse the incidents <span aria-hidden="true">↓</span></button>
+          }}>Browse the incidents <Arrow direction="down" /></button>
         </div>
         <div className={`current-assignment ${allDone ? 'is-resolved' : ''}`}>
           <span className="assignment-index" aria-hidden="true">
@@ -49,8 +63,8 @@ export default function LevelMap({ completed }) {
             <p>{allDone ? 'All fifteen incidents are resolved. Revisit any entry below to keep the concepts fresh.' : nextLevel.concept}</p>
             {!allDone && (
               <a className="btn btn-primary" href={`#/level/${nextLevel.id}`}>
-                {completedCount === 0 ? 'Start Level 01' : `Continue Level ${String(nextLevel.number).padStart(2, '0')}`}
-                <span aria-hidden="true">↗</span>
+                {completedCount === 0 ? 'Start Incident 01' : `Continue Incident ${String(nextLevel.number).padStart(2, '0')}`}
+                <Arrow />
               </a>
             )}
             <span className="assignment-note">{allDone ? 'Season complete' : 'Learn · Reproduce · Repair · Verify'}</span>
@@ -66,7 +80,7 @@ export default function LevelMap({ completed }) {
           <section className="register-section" key={act} aria-label={`${act} — ${title}`}>
             <div className="register-heading"><h2>{title}</h2><span>{act} / {items.length} incidents</span></div>
             <ol className="incident-list" start={items[0].number}>
-              {items.map((level) => <IncidentRow key={level.id} level={level} completed={completed} />)}
+              {items.map((level) => <IncidentRow key={level.id} level={level} completed={completed} activity={activityFor(telemetry, level.id)} />)}
             </ol>
           </section>
         ))}
