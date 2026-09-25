@@ -504,21 +504,29 @@ The current assignment's action reads Start Incident NN until the learner has ru
 
 The concept is a native `details` element, closed initially. Its summary has a minimum height of (56px), a native amber marker, and a muted topic beneath its main label. Opening it reveals continuous prose between thin horizontal rules.
 
-Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. The tier name stays visible while a hint is open, followed by "· Hide". A muted monospaced "opened before" mark shows tiers revealed in earlier visits only. The last tier gives the fix away, so unless the tier before it has been read, its first activation shows a short muted warning and a Show the answer control instead of the hint; nothing is recorded until the learner confirms. Their appearance remains part of the document, with no side-border card.
+Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. The tier name stays visible while a hint is open, followed by "· Hide". A muted monospaced "opened before" mark shows tiers revealed in earlier visits only. The last tier gives the fix away, so the first time it is opened for an incident, whatever order the hints were read in, it shows a short muted warning and a Show the answer control instead of the hint; nothing is recorded until the learner confirms, and focus returns to the toggle. After that it opens directly, including on later visits. Their appearance remains part of the document, with no side-border card.
 
 ### Desktop setup notice
 
 A full amber surface with dark graphite text and the shared stage radius carries the desktop requirement. The heading is followed by the local editor, Vite recompilation, and desktop-browser workflow, then a semibold reassurance that the register and any open incident remain readable. The inline monitor SVG is (32px). It is a labelled aside rather than an overlay or disabled-state screen. Preserve the source visibility condition described in Layout.
 
+### First-visit orientation
+
+Until anything has been recorded in local telemetry, the lesson heading carries one muted line after the metadata: "New here?" in text color, then what an incident is and the reproduce, fix, verify loop. It disappears after the first check run or hint, with no dismiss control and no new surface.
+
 ### Workbench
 
 The workbench heads the right column: a muted label over a monospaced status on the left, the verification actions on the right, and a strong bottom rule over the page background. At (601px) and above it is sticky at the top of the working column, so the latest result and the next action stay in reach while the learner reads the report or scrolls the log; content inside the working column scrolls into view clear of it. At or below (600px) it sits in flow and its actions wrap.
 
-Its label is Verification before a run and Last run after one. The status reads the checks still to pass, Not run this visit, Running the checks, or the run number with its passed count (coral when a check fails, sage when all pass, "resolved" on the resolving run). After a run the status is a native button with a dotted underline that scrolls to and focuses the run summary in the log, clear of the pinned workbench. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation.
+Its label is Verification before a run and Last run after one. The status reads the checks still to pass, Not run this visit, Running the checks, or the run number with its passed count (coral when a check fails, sage when all pass, "resolved" on the resolving run). After a run the status is a native button with a dotted underline that scrolls to and focuses the run summary in the log, clear of the pinned workbench. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation. Pressing it during a run announces that the checks are already running through a visually hidden status region.
+
+Ctrl+Enter (⌘ Enter on a Mac) runs the checks from anywhere in the shell except form fields and links, which keep their own Enter behavior. The button exposes it through `aria-keyshortcuts` and a title, and the log's idle and last-run notes mention it in a `kbd` element; touch-first devices hide those mentions.
 
 ### Live preview and verification
 
 The preview is the one outlined inset stage, using the frontmatter preview surface, radius, and padding; mobile padding is (16px). Its boundary contains a titled, borderless iframe with the intentionally broken component and any caught crash. The quiet Restart preview button is connected by `aria-describedby` to the note beneath the stage: restarting reloads the preview, clearing component state and timers while source files and progress stay intact.
+
+The note above the stage follows the incident's state. An open incident asks the learner to reproduce the report. A resolved incident not yet checked this visit says it was resolved earlier and that the preview shows the source as it is now, so a crash on a pristine checkout never contradicts the Resolved label without explanation. After a run it simply says the preview shows the current source.
 
 Verification is a ruled log beneath the preview. Each row aligns a compact textual status with its check name. Error messages use wrapping monospaced text. Passing, failing, and pending are separate readable states; the results region announces updates politely and remains present when empty. After a run, a semibold summary names the run number and time with the passed count. When several checks fail for the same cause, such as one render crash, the first row shows the full message and later rows show "Same cause as the failure above" as a native disclosure holding their own message. Earlier runs from this visit follow as a muted monospaced list.
 
@@ -563,6 +571,7 @@ The shell has no general-purpose input, tag, or card primitive. The `lv-` contro
 - **Do** call the unit an incident in interface copy.
 - **Do** draw arrows with the shared stroked `Arrow` SVG rather than typing arrow glyphs into calls to action or the back link.
 - **Do** keep all shell text at (12px) or larger.
+- **Do** show keyboard shortcuts in a bordered monospaced `kbd`, and only where a keyboard is likely.
 
 ### Don't:
 

@@ -22,8 +22,17 @@ function jumpToSection(id) {
 export default function LevelPage({ level, isComplete, isSaved = isComplete, onComplete }) {
   const [demoKey, setDemoKey] = useState(0);
   const next = levels.find((item) => item.number === level.number + 1);
-  const activity = activityFor(useSyncExternalStore(subscribeLearning, getLearningSnapshot).levels, level.id);
+  const telemetry = useSyncExternalStore(subscribeLearning, getLearningSnapshot).levels;
+  const activity = activityFor(telemetry, level.id);
   const checks = useCheckRuns(level, { isComplete, onAllPass: onComplete });
+  // Nothing recorded anywhere yet: orient a brand-new learner once.
+  const firstVisit = Object.keys(telemetry).length === 0 && !isComplete;
+  const checkedThisVisit = Boolean(checks.results);
+  const previewNote = !isComplete
+    ? 'Reproduce the report here. Edit the source in your editor; changes hot-reload.'
+    : checkedThisVisit
+      ? 'This preview shows the source as it is now. Edit it in your editor; changes hot-reload.'
+      : 'Resolved earlier. This preview shows the source as it is now; run the checks to confirm it still passes.';
   const folio = String(level.number).padStart(2, '0');
 
   return (
@@ -35,6 +44,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
           <div>
             <h1 id="page-title" tabIndex={-1}>{level.title}</h1>
             <p className="level-metadata"><span>{level.concept}</span><span>Severity: {level.severity}</span><span className={isComplete ? 'state-ok' : 'state-open'}>{isComplete ? (isSaved ? 'Resolved' : 'Resolved · not saved yet') : 'Open'}</span></p>
+            {firstVisit && <p className="first-visit"><strong>New here?</strong> Each incident is one broken component. Reproduce the bug report in the preview, fix the file in your editor, then run the checks.</p>}
           </div>
         </div>
         <nav className="section-nav" aria-label="In this incident">
@@ -70,7 +80,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
               <h2 id="live-preview" tabIndex={-1}>Live preview</h2>
               <button className="quiet-button" aria-describedby="preview-restart-note" onClick={() => setDemoKey((key) => key + 1)}>Restart preview</button>
             </div>
-            <p className="section-note">Reproduce the report here. Edit the source in your editor; changes hot-reload.</p>
+            <p className="section-note">{previewNote}</p>
             <div className="demo-stage"><ExercisePreview key={demoKey} level={level} /></div>
             <p className="section-note restart-note" id="preview-restart-note">Restarting reloads the preview, clearing its component state and timers. Your source files and progress stay intact.</p>
           </section>
