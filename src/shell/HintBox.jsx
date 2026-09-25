@@ -11,6 +11,7 @@ export default function HintBox({ levelId, openedBefore = [] }) {
   // Only tiers opened in earlier visits are marked; this visit's reveals show themselves.
   const [openedEarlier] = useState(openedBefore);
   const [confirmingAnswer, setConfirmingAnswer] = useState(false);
+  const [answerConfirmed, setAnswerConfirmed] = useState(false);
   const answerToggle = useRef(null);
   const encoded = hints[levelId] || [];
   const answerTier = encoded.length - 1;
@@ -19,12 +20,14 @@ export default function HintBox({ levelId, openedBefore = [] }) {
 
   const reveal = (index) => {
     recordHintReveal(levelId, index + 1);
+    if (index === answerTier) setAnswerConfirmed(true);
     setConfirmingAnswer(false);
     setTier(index, true);
   };
 
-  // The last tier gives the fix away, so it asks once unless the tier before it was already read.
-  const needsConfirmation = (index) => index === answerTier && index > 0 && !revealed[index - 1] && !openedEarlier.includes(index);
+  // The last tier gives the fix away, so the first time it opens for an incident it asks,
+  // whatever order the hints were read in. Once seen, it opens directly.
+  const needsConfirmation = (index) => index === answerTier && index > 0 && !answerConfirmed && !openedEarlier.includes(index + 1);
 
   const toggleHint = (index) => {
     if (revealed[index]) setTier(index, false);

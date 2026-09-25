@@ -1,9 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { runIsolatedCheck } from './exercise-frame.js';
 import { recordCheckRun } from './learning.js';
 import { markRepeatedFailures } from './check-results.js';
 import { formatDay, formatMoment, formatTime, plural } from './format.js';
 import Arrow from './Arrow.jsx';
+
+const onMac = /Mac|iPhone|iPad/.test(globalThis.navigator?.userAgentData?.platform ?? globalThis.navigator?.platform ?? '');
+const RUN_SHORTCUT = onMac ? '⌘ Enter' : 'Ctrl+Enter';
+
+// Form fields keep their own Enter handling, and Ctrl+Enter on a link opens it in a new tab.
+const keepsOwnShortcut = (element) => element instanceof HTMLElement
+  && (element.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element.tagName) || Boolean(element.closest('a[href]')));
 
 /** One incident visit's verification loop, shared by the workbench and the log. */
 export function useCheckRuns(level, { isComplete, onAllPass }) {
@@ -11,11 +18,15 @@ export function useCheckRuns(level, { isComplete, onAllPass }) {
   const [running, setRunning] = useState(false);
   const [runs, setRuns] = useState([]);
   const [current, setCurrent] = useState(null);
+  const [notice, setNotice] = useState('');
   const activeRun = useRef(null);
   useEffect(() => () => activeRun.current?.abort(), []);
 
   async function runAll() {
-    if (activeRun.current) return;
+    if (activeRun.current) {
+      setNotice('The checks are already running.');
+      return;
+    }
     const controller = new AbortController();
     activeRun.current = controller;
     const resolves = !isComplete;
@@ -52,11 +63,27 @@ export function useCheckRuns(level, { isComplete, onAllPass }) {
       if (!controller.signal.aborted) setResults([{ name: 'Check runner', pass: false, message: `The check run could not finish: ${error?.message || error}. Please re-run.` }]);
     } finally {
       if (activeRun.current === controller) activeRun.current = null;
-      if (!controller.signal.aborted) setRunning(false);
+      if (!controller.signal.aborted) {
+        setRunning(false);
+        setNotice('');
+      }
     }
   }
 
-  return { results, running, runs, current, runAll };
+  // Ctrl+Enter (⌘ Enter on a Mac) runs the checks from anywhere in the shell.
+  const onShortcut = useEffectEvent((event) => {
+    if (event.key !== 'Enter' || !(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return;
+    if (keepsOwnShortcut(event.target)) return;
+    event.preventDefault();
+    runAll();
+  });
+  useEffect(() => {
+    const listener = (event) => onShortcut(event);
+    window.addEventListener('keydown', listener);
+    return () => window.removeEventListener('keydown', listener);
+  }, []);
+
+  return { results, running, runs, current, notice, runAll };
 }
 
 function benchStatus({ results, running, current }, { isComplete, total }) {
@@ -95,7 +122,7 @@ export function Workbench({ level, checks, isComplete, next }) {
       </p>
       <div className="workbench-actions">
         {/* One button in every state keeps keyboard focus through a run; runAll ignores repeat presses. */}
-        <button id="run-checks" className={`btn${isComplete ? '' : ' btn-primary'}`} onClick={checks.runAll} aria-disabled={checks.running}>
+        <button id="run-checks" className={`btn${isComplete ? '' : ' btn-primary'}`} onClick={checks.runAll} aria-disabled={checks.running} aria-keyshortcuts="Control+Enter Meta+Enter" title={RUN_SHORTCUT}>
           {label}
         </button>
         {isComplete && (
@@ -104,6 +131,7 @@ export function Workbench({ level, checks, isComplete, next }) {
           </a>
         )}
       </div>
+      <span className="sr-only" role="status">{checks.notice}</span>
     </div>
   );
 }
@@ -172,12 +200,12 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
         <p className="checks-idle">
           {isComplete
             ? 'No checks run in this visit. Run the checks to verify your current source.'
-            : 'Fix the bug in your editor (the page hot-reloads), then run the checks. All green unlocks the next incident.'}
+            : <>Fix the bug in your editor (the page hot-reloads), then run the checks<span className="shortcut-hint"> with the button or <kbd>{RUN_SHORTCUT}</kbd></span>. All green unlocks the next incident.</>}
         </p>
       )}
       {!running && standing && <p className="log-standing">{standing}</p>}
       {!running && current && !current.resolved && !standing && (
-        <p className="section-note last-run-note">Results describe run {current.number}. Re-run after editing your source files.</p>
+        <p className="section-note last-run-note">Results describe run {current.number}. Re-run after editing your source files<span className="shortcut-hint"> (<kbd>{RUN_SHORTCUT}</kbd>)</span>.</p>
       )}
 
       {isComplete && !running && (
