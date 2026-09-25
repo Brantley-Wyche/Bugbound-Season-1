@@ -10,7 +10,7 @@ const level = levels.find(item => item.id === params.get('level'));
 const rootElement = document.getElementById('exercise-root');
 
 if (level) {
-  document.title = `${level.title} — exercise`;
+  document.title = `${level.title} — preview`;
   if (params.get('mode') === 'check') {
     window.__bugboundCheck = index => {
       if (!level.checks[index]) throw new Error('Unknown exercise check.');
@@ -32,5 +32,5 @@ if (level) {
     window.addEventListener('pagehide', () => resize.disconnect(), { once: true });
   }
 } else {
-  rootElement.textContent = 'This exercise could not be found.';
+  rootElement.textContent = 'This incident could not be found.';
 }

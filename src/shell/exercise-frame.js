@@ -30,13 +30,13 @@ export function runIsolatedCheck(level, index, { signal, timeoutMs = 15000 } = {
       if (finished) return;
       try {
         const run = frame.contentWindow?.__bugboundCheck;
-        if (typeof run !== 'function') throw new Error('The exercise could not start. Check the terminal for compilation errors, then re-run.');
+        if (typeof run !== 'function') throw new Error('The incident could not start. Check the terminal for compilation errors, then re-run.');
         settle(await run(index));
       } catch (error) {
         fail(String(error?.message || error));
       }
     }, { once: true });
-    frame.addEventListener('error', () => fail('The exercise could not load. Check your dev server, then re-run.'), { once: true });
+    frame.addEventListener('error', () => fail('The incident could not load. Check your dev server, then re-run.'), { once: true });
     frame.src = exerciseURL(level.id, 'check');
     document.body.appendChild(frame);
   });
