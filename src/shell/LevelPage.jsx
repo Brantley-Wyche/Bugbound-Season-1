@@ -9,7 +9,9 @@ function jumpToSection(id) {
   const target = document.getElementById(id);
   if (target instanceof HTMLDetailsElement) target.open = true;
   target?.scrollIntoView({ behavior: 'auto', block: 'start' });
-  target?.focus({ preventScroll: true });
+  // A disclosure takes focus on its summary so it stays in the tab order.
+  const focusTarget = target instanceof HTMLDetailsElement ? target.querySelector('summary') : target;
+  focusTarget?.focus({ preventScroll: true });
 }
 
 export default function LevelPage({ level, isComplete, isSaved = isComplete, onComplete }) {
@@ -57,7 +59,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
           </div>
         </section>
 
-        <details className="concept-entry" id="concept" tabIndex={-1}>
+        <details className="concept-entry" id="concept">
           <summary><span>Read the concept</span><span className="concept-topic">{level.concept}</span></summary>
           <div className="concept-content"><Prose paragraphs={level.lesson} /></div>
         </details>

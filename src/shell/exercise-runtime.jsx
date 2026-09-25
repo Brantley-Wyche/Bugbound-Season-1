@@ -1,3 +1,4 @@
+import { createRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { levels } from '../levels/index.js';
 import ErrorBoundary from './ErrorBoundary.jsx';
@@ -17,7 +18,13 @@ if (level) {
     };
   } else {
     const Demo = level.Component;
-    createRoot(rootElement).render(<ErrorBoundary><Demo /></ErrorBoundary>);
+    const boundary = createRef();
+    createRoot(rootElement).render(<ErrorBoundary ref={boundary}><Demo /></ErrorBoundary>);
+    // Fast Refresh cannot retry a boundary that failed before its first hot
+    // update, so a lesson that crashes on load would keep a stale crash after
+    // the fix. Retry once React Refresh's 16ms update debounce has applied the
+    // new code; a still-broken component simply fails again.
+    import.meta.hot?.on('vite:afterUpdate', () => setTimeout(() => boundary.current?.retry(), 50));
     const resize = new ResizeObserver(() => {
       parent.postMessage({ type: 'bugbound:preview-size', height: Math.ceil(rootElement.getBoundingClientRect().height) }, location.origin);
     });

@@ -439,7 +439,7 @@ The register introduction uses two columns. Incident rows align a number, title,
 
 The lesson is one document. Above (900px), the report, concept disclosure, and hints occupy the left column while preview and verification occupy the right; the ratio is (1 : 1.1), with a normal column gap of (64px). At or below (900px), sections follow their DOM order in one column: report, concept, preview and checks, then hints.
 
-At or below (1050px), column gaps tighten to (36px) and the long season descriptor disappears. At or below (900px), page padding becomes (32px). At or below (600px), padding becomes (20px), the introduction stacks, incident concepts move below their titles, section navigation becomes two columns, and progress moves to its own header row. The prominent desktop setup notice has its own visibility condition: at or below (1100px), or on a device matching both `hover: none` and `pointer: coarse`, including wider touch-first tablets. It sits below the header and above either page. At (600px) and below, its icon stacks over the text and its padding reduces from (24px) to (20px). It does not block browsing.
+At or below (1050px), column gaps tighten to (36px) and the long season descriptor disappears. At or below (900px), page padding becomes (32px). At or below (600px), padding becomes (20px), the introduction stacks, incident concepts move below their titles, section navigation becomes two columns, and progress moves to its own header row. The prominent desktop setup notice has its own visibility condition: on a device matching both `hover: none` and `pointer: coarse`, including wider touch-first tablets, or at or below (600px). Narrow fine-pointer desktop windows beside an editor do not show it. It sits below the header and above either page. At (600px) and below, its icon stacks over the text and its padding reduces from (24px) to (20px). It does not block browsing.
 
 Spacing is built from recurring compact, row, group, and section intervals rather than a rigid universal grid. Preserve the existing content order and reading measure when extending the shell.
 
@@ -453,7 +453,7 @@ The shell has no box shadows. Thin rules separate the continuous document; a sli
 
 The register and document remain square and open. Small radii soften actual controls and the preview enclosure: use the frontmatter control and stage radii. Inline code uses the modest code radius recorded in the frontmatter. Avoid introducing pill containers or colored side-border cards into the shell.
 
-The book-outline brand mark is an inline SVG with an open notebook spine and short ruled strokes. Folio numbers and horizontal rules carry the notebook identity through the remaining interface.
+The brand mark is the owner-supplied `bugbound-icon.svg`, shown as an image at (30px) with its own gold artwork. Folio numbers and horizontal rules carry the notebook identity through the remaining interface.
 
 ## Components
 
@@ -499,7 +499,7 @@ The saved-completion summary uses a sage heading, muted explanatory copy, a thin
 
 When a completion write fails, the metadata says Completed this visit and the summary explicitly says progress has not been saved. A storage notice above the main content uses the existing error-colored full outline, (20px) padding, and a native retry button. The notice announces its message through status semantics. Retry saving progress and Retry reset identify the failed operation accurately. Reset confirmation occurs before the initial reset; retrying an already-confirmed failure does not ask again.
 
-An additional native text continuation link sits beside the verification workflow, below its results and last-run note, whenever completion is saved and checks are not running. Saved completion and the last-run results can coexist even when a later check fails. The saved-completion announcement uses a persistent polite, atomic live region.
+An additional native text continuation link sits beside the verification workflow, below its results and last-run note, whenever the incident is complete (saved, or earned this visit but unsaved) and checks are not running. Saved completion and the last-run results can coexist even when a later check fails. The saved-completion announcement uses a persistent polite, atomic live region.
 
 ### Progress
 
