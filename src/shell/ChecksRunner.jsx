@@ -42,7 +42,8 @@ export default function ChecksRunner({ level, onAllPass, isComplete, continuatio
   return (
     <section className="checks-entry" aria-busy={running} aria-labelledby="checks">
       <div className="section-heading"><h2 id="checks" tabIndex={-1}>Verification log</h2><span className="document-ref">{level.checks.length} checks</span></div>
-      <button className="btn btn-primary" onClick={runAll} disabled={running}>
+      {/* aria-disabled keeps keyboard focus on the button during a run; runAll ignores repeat presses. */}
+      <button className="btn btn-primary" onClick={runAll} aria-disabled={running}>
         {running ? 'Running…' : results ? 'Re-run checks' : 'Run checks'}
       </button>
 
