@@ -25,8 +25,9 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
   const telemetry = useSyncExternalStore(subscribeLearning, getLearningSnapshot).levels;
   const activity = activityFor(telemetry, level.id);
   const checks = useCheckRuns(level, { isComplete, onAllPass: onComplete });
-  // Nothing recorded anywhere yet: orient a brand-new learner once.
-  const firstVisit = Object.keys(telemetry).length === 0 && !isComplete;
+  // Nothing recorded anywhere yet: orient a brand-new learner. Fixed for the visit so the
+  // page never shifts under the learner's first action.
+  const [firstVisit] = useState(() => Object.keys(getLearningSnapshot().levels).length === 0 && !isComplete);
   const checkedThisVisit = Boolean(checks.results);
   const previewNote = !isComplete
     ? 'Reproduce the report here. Edit the source in your editor; changes hot-reload.'
@@ -44,7 +45,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
           <div>
             <h1 id="page-title" tabIndex={-1}>{level.title}</h1>
             <p className="level-metadata"><span>{level.concept}</span><span>Severity: {level.severity}</span><span className={isComplete ? 'state-ok' : 'state-open'}>{isComplete ? (isSaved ? 'Resolved' : 'Resolved · not saved yet') : 'Open'}</span></p>
-            {firstVisit && <p className="first-visit"><strong>New here?</strong> Each incident is one broken component. Reproduce the bug report in the preview, fix the file in your editor, then run the checks.</p>}
+            {firstVisit && <p className="first-visit"><strong>New here?</strong> Each incident is one broken component. Read the concept, reproduce the report in the preview, repair the file in your editor, then verify with the checks.</p>}
           </div>
         </div>
         <nav className="section-nav" aria-label="In this incident">
@@ -77,7 +78,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
           <Workbench level={level} checks={checks} isComplete={isComplete} next={next} />
           <section className="preview-entry" aria-labelledby="live-preview">
             <div className="section-heading">
-              <h2 id="live-preview" tabIndex={-1}>Live preview</h2>
+              <h2 id="live-preview" className="jump-target" tabIndex={-1}>Live preview</h2>
               <button className="quiet-button" aria-describedby="preview-restart-note" onClick={() => setDemoKey((key) => key + 1)}>Restart preview</button>
             </div>
             <p className="section-note">{previewNote}</p>

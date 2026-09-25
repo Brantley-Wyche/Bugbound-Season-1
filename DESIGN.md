@@ -488,7 +488,7 @@ Interactive elements use a (2px) amber focus outline offset by (4px); linked reg
 
 The linked wordmark returns to the register. The lesson back link remains a native anchor. Section jumps appear at or below (900px) as native buttons with generous vertical hit areas, muted text at rest, and amber underlined text on hover. A section jump scrolls to and focuses its target without changing the hash route; the concept target opens its native disclosure and focuses its summary, and Run the checks focuses the workbench's Run button.
 
-A skip link appears on focus. Route changes focus the page title. Do not replace these interactions with visual-only click targets.
+A skip link appears on focus. Route changes focus the page title. Jump and record targets (the Live preview, Verification log, and hints headings, the run summary, and the resolution record) show the amber focus outline when they receive focus; the page title and main region do not. Do not replace these interactions with visual-only click targets.
 
 Section jumps use native buttons that scroll and focus the target without changing the hash route. Incident-to-incident navigation remains links.
 
@@ -504,7 +504,7 @@ The current assignment's action reads Start Incident NN until the learner has ru
 
 The concept is a native `details` element, closed initially. Until anything has been recorded, its summary reads "Start here: read the concept" in amber; it still starts closed, so the learner reads the crash first. Its summary has a minimum height of (56px), a native amber marker, and a muted topic beneath its main label. Opening it reveals continuous prose between thin horizontal rules.
 
-Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. The tier name stays visible while a hint is open, followed by "· Hide". A muted monospaced "opened before" mark shows tiers revealed in earlier visits only. The last tier gives the fix away, so the first time it is opened for an incident, whatever order the hints were read in, it shows a short muted warning and a Show the answer control instead of the hint; nothing is recorded until the learner confirms, and focus returns to the toggle. After that it opens directly, including on later visits. Their appearance remains part of the document, with no side-border card.
+Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. The tier name stays visible while a hint is open, followed by "· Hide". A muted monospaced "opened before" mark shows tiers revealed in earlier visits only. The last tier gives the fix away, so the first time it is opened for an incident, whatever order the hints were read in, it shows a short muted warning and a Show the answer control instead of the hint; the toggle reads "· Hide" while the warning is open, Escape dismisses it, nothing is recorded until the learner confirms, and focus returns to the toggle. After that it opens directly, including on later visits. Their appearance remains part of the document, with no side-border card.
 
 ### Desktop setup notice
 
@@ -512,15 +512,17 @@ A full amber surface with dark graphite text and the shared stage radius carries
 
 ### First-visit orientation
 
-Until anything has been recorded in local telemetry, the lesson heading carries one muted line after the metadata: "New here?" in text color, then what an incident is and the reproduce, fix, verify loop. It disappears after the first check run or hint, with no dismiss control and no new surface.
+When the page opens with nothing recorded in local telemetry, the lesson heading carries one muted line after the metadata: "New here?" in text color, then what an incident is and the loop in its canonical words. The state is fixed for the visit, so the page never shifts under the learner's first run or hint; the line is gone on the next visit, with no dismiss control and no new surface.
+
+**The Loop Rule.** The learning loop is always Learn · Reproduce · Repair · Verify, in that order and in those verbs: the register note, the register introduction, the first-visit line, and the empty log all use them.
 
 ### Workbench
 
 The workbench heads the right column: a muted label over a monospaced status on the left, the verification actions on the right, and a strong bottom rule over the page background. At (601px) and above it is sticky at the top of the working column, so the latest result and the next action stay in reach while the learner reads the report or scrolls the log; content inside the working column scrolls into view clear of it. At or below (600px) it sits in flow and its actions wrap.
 
-Its label is Verification before a run and Last run after one. The status reads the checks still to pass, Not run this visit, Running the checks, or the run number with its passed count (coral when a check fails, sage when all pass, "resolved" on the resolving run). After a run the status is a native button with a dotted underline that scrolls to and focuses the run summary in the log, clear of the pinned workbench. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation. Pressing it during a run announces that the checks are already running through a visually hidden status region.
+Its label is Verification before a run and Last run after one. The status reads the checks still to pass, Not run this visit, Running the checks, or the run number with its passed count (coral when a check fails, sage when all pass, "resolved" on the resolving run). After a run the status is a native button with a dotted underline that scrolls to and focuses the run summary in the log, clear of the pinned workbench. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation. Pressing it during a run announces that the checks are already running through a visually hidden status region. Starting a run while focus is inside the log (on the run summary or the resolution record, which the run replaces) moves focus to the Run button.
 
-Ctrl+Enter (⌘ Enter on a Mac) runs the checks from anywhere in the shell except form fields and links, which keep their own Enter behavior. The button exposes it through `aria-keyshortcuts` (no `title`, which some tools promote to the accessible name), and the log's idle and last-run notes mention it in a `kbd` element; touch-first devices hide those mentions.
+Ctrl+Enter (⌘ Enter on a Mac) runs the checks from anywhere in the shell except form fields and links, which keep their own Enter behavior. The preview frame forwards the same shortcut to the shell by same-origin message, so it also works while focus is inside the preview. The button exposes it through `aria-keyshortcuts` (no `title`, which some tools promote to the accessible name), and the log's idle and last-run notes mention it in a `kbd` element; touch-first devices hide those mentions.
 
 ### Live preview and verification
 
@@ -528,13 +530,13 @@ The preview is the one outlined inset stage, using the frontmatter preview surfa
 
 The note above the stage follows the incident's state. An open incident asks the learner to reproduce the report. A resolved incident not yet checked this visit says it was resolved earlier and that the preview shows the source as it is now, so a crash on a pristine checkout never contradicts the Resolved label without explanation. After a run it simply says the preview shows the current source.
 
-Verification is a ruled log beneath the preview. Each row aligns a compact textual status with its check name. Error messages use wrapping monospaced text. Passing, failing, and pending are separate readable states; the results region announces updates politely and remains present when empty. After a run, a semibold summary names the run number and time with the passed count. When several checks fail for the same cause, such as one render crash, the first row shows the full message and later rows show "Same cause as the failure above" as a native disclosure holding their own message. Earlier runs from this visit follow as a muted monospaced list.
+Verification is a ruled log beneath the preview. Each row aligns a compact textual status with its check name. Error messages use wrapping monospaced text. Passing, failing, and pending are separate readable states; the results region announces updates politely and remains present when empty. After a run, a semibold summary names the run number and time with the passed count. When several checks fail for the same cause, such as one render crash, the first row shows the full message and later rows show "Same cause as the failure above" as a native disclosure (at least (44px) tall) holding their own message. Earlier runs from this visit follow as a muted monospaced list.
 
 ### Resolution and continuation
 
-Resolution is recorded where the work happened, not in a banner above the page. The run that first completes an incident ends the log with a sage rule, a sage Resolved heading, and a muted record: when, after how many runs and hints, and whether progress was saved. A persistent polite, atomic live region announces it. The bug report reference gains a sage "Resolved" mark with the date, and the metadata reads Resolved, or Resolved · not saved yet when the write failed.
+Resolution is recorded where the work happened, not in a banner above the page. The run that first completes an incident ends the log with a sage rule, a sage Resolved heading, and a muted record: when, after how many runs and hints, and whether progress was saved. A persistent polite, atomic live region announces it. The resolving run is the one moment the page moves: the "Resolved." heading scrolls into view clear of the workbench and takes focus, so the record and reflection are read before Next. The bug report reference gains a sage "Resolved" mark with the date, and the metadata reads Resolved, or Resolved · not saved yet when the write failed.
 
-Whenever the incident is complete, "Make the fix stick." follows in the log: an (18px) heading above a rule, the prompt to explain what React was doing, why the change worked, and which signal helped, and the check names as prompts. It sits beside the record rather than at the foot of the page, so it is read before Next.
+Whenever the incident is complete and the current run is not failing, "Make the fix stick." follows in the log: an (18px) heading above a rule, the prompt to explain what React was doing, why the change worked, and which signal helped, and the check names as prompts. It sits beside the record rather than at the foot of the page, so it is read before Next.
 
 On later visits the log's empty state says no checks have run in this visit, followed by a standing note: Resolved with the date after N runs; that record stays, and a new run checks the source as it is now. A later failing run keeps the resolution and says so: Your resolution from that date still stands, and the current source fails N checks. Saved completion is never a claim that current source passes. The Next continuation lives in the workbench whenever the incident is complete and checks are not running.
 
@@ -550,7 +552,7 @@ Your field notes sits in the left column between the concept and hints: an (18px
 
 ### Progress
 
-The header shows fifteen small rectangular segments with an adjacent resolved count. Completed segments use sage and remaining ones use the rule color. The accessible progressbar exposes numeric progress. On mobile, the segments become short horizontal marks.
+The header shows fifteen small rectangular segments with an adjacent resolved count. Completed segments use sage and remaining ones use the rule color. The accessible progressbar exposes numeric progress and an `aria-valuetext` such as "3 of 15 incidents resolved". On mobile, the segments become short horizontal marks.
 
 ### Exercise-local controls
 
