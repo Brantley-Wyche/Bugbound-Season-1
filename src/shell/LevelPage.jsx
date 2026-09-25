@@ -6,6 +6,8 @@ import Prose from './Prose.jsx';
 import ExercisePreview from './ExercisePreview.jsx';
 import { useCheckRuns, Workbench, VerificationLog } from './ChecksRunner.jsx';
 import FieldNotes from './FieldNotes.jsx';
+import FileReference from './FileReference.jsx';
+import Arrow from './Arrow.jsx';
 import HintBox from './HintBox.jsx';
 
 function jumpToSection(id) {
@@ -27,12 +29,12 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
   return (
     <main id="main-content" tabIndex={-1}>
       <header className="level-header">
-        <a className="back-link" href="#/">← Incident register</a>
+        <a className="back-link" href="#/"><Arrow direction="left" />Incident register</a>
         <div className="level-heading">
           <span className="folio-number"><span className="sr-only">Incident </span>{folio}</span>
           <div>
             <h1 id="page-title" tabIndex={-1}>{level.title}</h1>
-            <p className="level-metadata"><span>{level.concept}</span><span>Severity: {level.severity}</span><span className={isComplete ? 'state-ok' : 'state-open'}>{isComplete ? (isSaved ? 'Completion saved' : 'Completed this visit') : 'Open'}</span></p>
+            <p className="level-metadata"><span>{level.concept}</span><span>Severity: {level.severity}</span><span className={isComplete ? 'state-ok' : 'state-open'}>{isComplete ? (isSaved ? 'Resolved' : 'Resolved · not saved yet') : 'Open'}</span></p>
           </div>
         </div>
         <nav className="section-nav" aria-label="In this incident">
@@ -47,12 +49,12 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
         <section className="incident-brief" aria-labelledby="report-title">
           <div className="section-heading">
             <h2 id="report-title">Bug report</h2>
-            <span className="document-ref">BUG-{String(level.number).padStart(3, '0')}{isComplete && <span className="state-ok"> · Closed{activity.resolvedAt ? ` ${formatDay(activity.resolvedAt)}` : ''}</span>}</span>
+            <span className="document-ref">BUG-{String(level.number).padStart(3, '0')}{isComplete && <span className="state-ok"> · Resolved{activity.resolvedAt ? ` ${formatDay(activity.resolvedAt)}` : ''}</span>}</span>
           </div>
           <p className="symptom">{level.symptom}</p>
           <div className="file-list">
             <span className="hint-label">{level.vague ? 'Investigate this folder' : 'Where to look'}</span>
-            {level.files.map((file) => <code key={file}>{file}</code>)}
+            {level.files.map((file) => <FileReference key={file} path={file} />)}
           </div>
         </section>
 
@@ -62,7 +64,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
         </details>
 
         <div className="working-area">
-          <Workbench level={level} checks={checks} isComplete={isComplete} activity={activity} next={next} />
+          <Workbench level={level} checks={checks} isComplete={isComplete} next={next} />
           <section className="preview-entry" aria-labelledby="live-preview">
             <div className="section-heading">
               <h2 id="live-preview" tabIndex={-1}>Live preview</h2>
@@ -78,14 +80,6 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
         <FieldNotes activity={activity} isComplete={isComplete} />
         <HintBox levelId={level.id} openedBefore={activity.hintsRevealed} />
       </div>
-
-      {isComplete && (
-        <section className="resolution-review" aria-labelledby="review-title">
-          <h2 id="review-title">Make the fix stick.</h2>
-          <p>Before moving on, explain what React was doing, why your change corrected it, and which signal helped you find it.</p>
-          <ul>{level.checks.map((check) => <li key={check.name}>{check.name}</li>)}</ul>
-        </section>
-      )}
     </main>
   );
 }

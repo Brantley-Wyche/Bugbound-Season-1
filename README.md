@@ -43,7 +43,9 @@ npm install
 npm run dev
 ```
 
-Open the printed URL, start Level 01, and keep your editor open next to the browser.
+Open the printed URL, start Incident 01, and keep your editor open next to the browser.
+
+**Open in editor** beside each file path asks Vite's dev server to open the file. It uses an editor it finds running (VS Code, Cursor, WebStorm, and others), or the command in the `LAUNCH_EDITOR` environment variable, for example `LAUNCH_EDITOR=code`. If nothing opens, use **Copy path** instead.
 
 ## House rules
 

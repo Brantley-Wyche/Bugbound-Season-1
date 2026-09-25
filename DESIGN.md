@@ -39,7 +39,7 @@ typography:
     lineHeight: 1.65
   label:
     fontFamily: "'Cascadia Mono', Consolas, ui-monospace, monospace"
-    fontSize: "11px"
+    fontSize: "12px"
   button:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
     fontSize: "13px"
@@ -71,7 +71,7 @@ typography:
     letterSpacing: "-0.04em"
   notice-title:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
-    fontSize: "22px"
+    fontSize: "21px"
     fontWeight: 600
     lineHeight: 1.3
     letterSpacing: "-0.02em"
@@ -87,17 +87,17 @@ typography:
     lineHeight: 1.65
   metadata-mobile:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
-    fontSize: "11px"
+    fontSize: "12px"
     fontWeight: 400
     lineHeight: 1.65
   credit:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
-    fontSize: "11px"
+    fontSize: "12px"
     fontWeight: 400
     lineHeight: 1.65
   credit-mobile:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
-    fontSize: "10px"
+    fontSize: "12px"
     fontWeight: 400
     lineHeight: 1.65
   quiet-action:
@@ -107,7 +107,7 @@ typography:
     lineHeight: 1.65
   quiet-action-mobile:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
-    fontSize: "11px"
+    fontSize: "12px"
     fontWeight: 400
     lineHeight: 1.65
   text-link:
@@ -157,7 +157,7 @@ typography:
     letterSpacing: "-0.02em"
   register-title:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
-    fontSize: "22px"
+    fontSize: "21px"
     fontWeight: 600
     lineHeight: 1.3
     letterSpacing: "-0.02em"
@@ -204,12 +204,12 @@ typography:
     lineHeight: 1.5
   incident-concept-mobile:
     fontFamily: "'Public Sans', 'Segoe UI', system-ui, sans-serif"
-    fontSize: "11px"
+    fontSize: "12px"
     fontWeight: 400
     lineHeight: 1.5
   status-mobile:
     fontFamily: "'Cascadia Mono', Consolas, ui-monospace, monospace"
-    fontSize: "10px"
+    fontSize: "12px"
     fontWeight: 400
     lineHeight: "normal"
   lesson-folio:
@@ -425,7 +425,7 @@ The palette pairs slightly green graphite neutrals with paper-like text and a re
 
 Feedback uses **sage — ok** for resolved incidents and passing checks, **soft coral — err** for failed checks and preview crashes, and **pale blue — info** for code references. These are functional signals rather than a second brand palette.
 
-**The Status Text Rule.** Color reinforces explicit words such as Open, Locked, Resolved, Completion saved, PASS, FAIL, and PEND; it does not carry the state alone.
+**The Status Text Rule.** Color reinforces explicit words such as Open, Locked, Resolved, PASS, FAIL, and PEND; it does not carry the state alone. "Resolved" is the single word for a completed incident; "not saved yet" qualifies it when the completion write failed.
 
 ## Typography
 
@@ -447,6 +447,8 @@ The sans serif stays direct and readable. Monospace is reserved for reference nu
 The frontmatter includes descriptive contextual and responsive roles for every font-size value used in the shell, including the notice, assignment count, hints, verification, footer, and relative inline code. Sidecar typography metadata identifies the corresponding contexts. Responsive roles apply only at their documented breakpoint.
 
 **The Reference Type Rule.** Keep prose in Public Sans and reserve monospace for operational references and measured results.
+
+**The 12px Floor.** No shell text is smaller than (12px) at any width, including status labels, references, metadata, notes, and the footer credit. Smaller roles that earlier existed for mobile now share the (12px) floor.
 
 ## Layout
 
@@ -494,13 +496,15 @@ Section jumps use native buttons that scroll and focus the target without changi
 
 Rows are ruled list entries, with a minimum height of (64px). Available entries are links; locked entries remain visible non-interactive rows. Resolved and open entries have explicit status labels. Hover only applies to linked rows. Mobile keeps the number and status aligned while placing the concept under the title.
 
-Open and resolved rows carry a muted monospaced record note under the title once the learner has worked on them: runs and hints, then "last worked" for open incidents or "Closed" with the date for resolved ones. Locked rows and untouched incidents show no note.
+Open and resolved rows carry a muted monospaced record note under the title once the learner has worked on them: runs and hints, then "last worked" for open incidents, or the resolution date for resolved ones. Locked rows and untouched incidents show no note.
+
+The current assignment's action reads Start Incident NN until the learner has run checks or opened a hint on that incident, then Continue Incident NN.
 
 ### Concept and hint disclosures
 
 The concept is a native `details` element, closed initially. Its summary has a minimum height of (56px), a native amber marker, and a muted topic beneath its main label. Opening it reveals continuous prose between thin horizontal rules.
 
-Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. A muted monospaced "opened" mark shows tiers the learner has revealed before. Their appearance remains part of the document, with no side-border card.
+Hints use full-width buttons with a minimum height of (52px), an explicit tier label, `aria-expanded`, and an associated hidden panel. They begin concealed. The tier name stays visible while a hint is open, followed by "· Hide". A muted monospaced "opened before" mark shows tiers revealed in earlier visits only. The last tier gives the fix away, so unless the tier before it has been read, its first activation shows a short muted warning and a Show the answer control instead of the hint; nothing is recorded until the learner confirms. Their appearance remains part of the document, with no side-border card.
 
 ### Desktop setup notice
 
@@ -510,17 +514,19 @@ A full amber surface with dark graphite text and the shared stage radius carries
 
 The workbench heads the right column: a muted label over a monospaced status on the left, the verification actions on the right, and a strong bottom rule over the page background. At (601px) and above it is sticky at the top of the working column, so the latest result and the next action stay in reach while the learner reads the report or scrolls the log; content inside the working column scrolls into view clear of it. At or below (600px) it sits in flow and its actions wrap.
 
-Its status reads Not run this visit, Running the checks, Last run with the run number and passed count (coral when a check fails, sage when all pass), or Resolved on run N / Resolved with the date. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation.
+Its label is Verification before a run and Last run after one. The status reads the checks still to pass, Not run this visit, Running the checks, or the run number with its passed count (coral when a check fails, sage when all pass, "resolved" on the resolving run). After a run the status is a native button with a dotted underline that scrolls to and focuses the run summary in the log, clear of the pinned workbench. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation.
 
 ### Live preview and verification
 
 The preview is the one outlined inset stage, using the frontmatter preview surface, radius, and padding; mobile padding is (16px). Its boundary contains a titled, borderless iframe with the intentionally broken component and any caught crash. The quiet Restart preview button is connected by `aria-describedby` to the note beneath the stage: restarting reloads the preview, clearing component state and timers while source files and progress stay intact.
 
-Verification is a ruled log beneath the preview. Each row aligns a compact textual status with its check name. Error messages use wrapping monospaced text. Passing, failing, and pending are separate readable states; the results region announces updates politely and remains present when empty. After a run, a semibold summary names the run number and time with the passed count. Earlier runs from this visit follow as a muted monospaced list.
+Verification is a ruled log beneath the preview. Each row aligns a compact textual status with its check name. Error messages use wrapping monospaced text. Passing, failing, and pending are separate readable states; the results region announces updates politely and remains present when empty. After a run, a semibold summary names the run number and time with the passed count. When several checks fail for the same cause, such as one render crash, the first row shows the full message and later rows show "Same cause as the failure above" as a native disclosure holding their own message. Earlier runs from this visit follow as a muted monospaced list.
 
 ### Resolution and continuation
 
-Resolution is recorded where the work happened, not in a banner above the page. The run that first completes an incident ends the log with a sage rule, a sage Resolved heading, and a muted record: when, after how many runs and hints, and whether progress was saved. A persistent polite, atomic live region announces it. The bug report reference gains a sage Closed mark with the date, and the metadata reads Completion saved, or Completed this visit when the write failed.
+Resolution is recorded where the work happened, not in a banner above the page. The run that first completes an incident ends the log with a sage rule, a sage Resolved heading, and a muted record: when, after how many runs and hints, and whether progress was saved. A persistent polite, atomic live region announces it. The bug report reference gains a sage "Resolved" mark with the date, and the metadata reads Resolved, or Resolved · not saved yet when the write failed.
+
+Whenever the incident is complete, "Make the fix stick." follows in the log: an (18px) heading above a rule, the prompt to explain what React was doing, why the change worked, and which signal helped, and the check names as prompts. It sits beside the record rather than at the foot of the page, so it is read before Next.
 
 On later visits the log's empty state says no checks have run in this visit, followed by a standing note: Resolved with the date after N runs; that record stays, and a new run checks the source as it is now. A later failing run keeps the resolution and says so: Your resolution from that date still stands, and the current source fails N checks. Saved completion is never a claim that current source passes. The Next continuation lives in the workbench whenever the incident is complete and checks are not running.
 
@@ -528,7 +534,11 @@ When a completion write fails, a storage notice above the main content uses the 
 
 ### Field notes
 
-Your field notes sits in the left column between the concept and hints: an (18px) heading and a ruled definition list with muted labels and monospaced values for check runs, hints opened by tier name, last worked, and the resolution date. Values come only from local telemetry (`learning.js`), which records runs, hint tiers, timestamps, and the run that first resolved the incident. Before any activity it shows a single muted sentence instead of an empty list. Hint text is never shown here.
+Your field notes sits in the left column between the concept and hints: an (18px) heading and a ruled definition list with muted labels and monospaced values for check runs (including the run that resolved the incident), hints opened by tier name, and last worked. Values come only from local telemetry (`learning.js`), which records runs, hint tiers, timestamps, and the run that first resolved the incident. Before any activity it shows a single muted sentence instead of an empty list. Hint text is never shown here.
+
+### File references
+
+"Where to look" lists each path in monospace with quiet actions beside it. Copy path writes the path to the clipboard; when the browser denies clipboard access, it selects the path and asks for Ctrl+C or ⌘C instead. In development, file paths (not folders) also offer Open in editor, which asks Vite's dev server to open the file; because the server cannot confirm success, the notice says the request was sent and points to Copy path. Open in editor is hidden on touch-first devices. A polite status line beside the actions carries these notices.
 
 ### Progress
 
@@ -551,7 +561,8 @@ The shell has no general-purpose input, tag, or card primitive. The `lv-` contro
 - **Do** make the desktop setup requirement prominent while allowing lesson browsing.
 - **Do** distinguish saved completion from last-run verification and keep the continuation in the workbench.
 - **Do** call the unit an incident in interface copy.
-- **Do** draw arrows with the shared stroked `Arrow` SVG rather than typing arrow glyphs into calls to action.
+- **Do** draw arrows with the shared stroked `Arrow` SVG rather than typing arrow glyphs into calls to action or the back link.
+- **Do** keep all shell text at (12px) or larger.
 
 ### Don't:
 
