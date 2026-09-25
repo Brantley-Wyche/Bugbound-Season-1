@@ -25,7 +25,6 @@ export default function FieldNotes({ activity, isComplete }) {
             <dd>{hintsRevealed.length ? `${hintsRevealed.length} of 3 · ${hintsRevealed.map((tier) => HINT_TIERS[tier - 1]).join(', ')}` : 'None'}</dd>
           </div>
           {lastPracticedAt && <div><dt>Last worked</dt><dd>{capitalize(formatMoment(lastPracticedAt))}</dd></div>}
-          {resolved && <div><dt>Resolved</dt><dd>{capitalize(formatMoment(resolvedAt))}</dd></div>}
         </dl>
         <p className="section-note field-notes-note">Kept only in this browser, alongside your progress.</p>
       </>)}

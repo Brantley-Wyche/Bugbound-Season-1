@@ -75,10 +75,10 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .uptime-strip { display: flex; gap: 3px; }
 .seg { width: 5px; height: 17px; background: var(--border); }
 .seg.done { background: var(--ok); }
-.header-progress .label { color: var(--muted); font: 11px var(--font-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.header-progress .label { color: var(--muted); font: 12px var(--font-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .desktop-notice { display: none; }
 .desktop-notice svg { width: 32px; height: 32px; flex-shrink: 0; }
-.desktop-notice h2 { font-size: 22px; margin-bottom: 12px; }
+.desktop-notice h2 { font-size: 21px; margin-bottom: 12px; }
 .desktop-notice p { max-width: 70ch; font-size: 15px; line-height: 1.65; }
 .desktop-notice-browse { margin-top: 12px; font-weight: 600; }
 .storage-notice { margin-top: 24px; padding: 20px; border: 1px solid var(--err); }
@@ -88,7 +88,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; }
   .desktop-notice { display: flex; align-items: flex-start; gap: 20px; margin-top: 24px; padding: 24px; background: var(--accent); color: var(--bg); border-radius: var(--radius); }
 }
 .app-footer { margin-top: 72px; border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 12px; }
-.footer-credit { font-size: 11px; }
+.footer-credit { font-size: 12px; }
 .link-button, .quiet-button { color: var(--muted); background: none; border: 0; padding: 10px 4px; min-height: 44px; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
 .link-button:hover { color: var(--err); }
 .quiet-button:hover { color: var(--text); }
@@ -110,21 +110,21 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .current-assignment h2 { font-size: 25px; margin-top: 7px; }
 .current-assignment p { color: var(--muted); font-size: 13px; margin-top: 10px; }
 .current-assignment .btn { margin-top: 26px; }
-.assignment-note { display: block; color: var(--muted); font-size: 11px; margin-top: 18px; }
+.assignment-note { display: block; color: var(--muted); font-size: 12px; margin-top: 18px; }
 .current-assignment.is-resolved { display: block; }
 .current-assignment.is-resolved .assignment-index { font-size: 52px; color: var(--ok); }
 .register-section + .register-section { margin-top: 44px; }
 .register-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--border-strong); padding-bottom: 16px; }
-.register-heading h2 { font-size: 22px; }
+.register-heading h2 { font-size: 21px; }
 .register-heading > span { color: var(--muted); font-size: 12px; }
 .incident-list { list-style: none; padding: 0; margin: 0; }
-.incident-row { display: grid; grid-template-columns: 48px minmax(0, 1.15fr) minmax(0, 1fr) 76px; align-items: center; gap: 20px; min-height: 64px; padding: 16px 12px; border-bottom: 1px solid var(--border); text-decoration: none; }
+.incident-row { display: grid; grid-template-columns: 48px minmax(0, 1.15fr) minmax(0, 1fr) 84px; align-items: center; gap: 20px; min-height: 64px; padding: 16px 12px; border-bottom: 1px solid var(--border); text-decoration: none; }
 a.incident-row:hover { background: var(--bg-soft); color: var(--text); }
 a.incident-row:focus-visible { outline-offset: -2px; }
 .incident-number { font: 14px var(--font-mono); color: var(--muted); }
 .incident-name { font-weight: 500; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
 .incident-concept { color: var(--muted); font-size: 12px; line-height: 1.5; }
-.incident-status { text-align: right; font: 11px var(--font-mono); color: var(--muted); }
+.incident-status { text-align: right; font: 12px var(--font-mono); color: var(--muted); }
 .incident-status.state-open { color: var(--accent); }
 .state-fail { color: var(--err); }
 .incident-status.state-ok { color: var(--ok); }
@@ -134,7 +134,7 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 
 /* Each incident is one continuous document. */
 .level-header { padding-top: 16px; }
-.back-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 12px; color: var(--muted); text-decoration: none; }
+.back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 12px; color: var(--muted); text-decoration: none; }
 .level-heading { display: flex; gap: 28px; align-items: flex-start; margin: 12px 0 24px; }
 .folio-number { font-size: 62px; line-height: 1; font-weight: 250; color: var(--accent); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
 .level-heading > div { min-width: 0; }
@@ -151,11 +151,15 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 .hint-entry { grid-area: hints; min-width: 0; }
 .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
 .section-heading h2 { flex-shrink: 0; }
-.document-ref { color: var(--muted); font: 11px var(--font-mono); white-space: nowrap; }
+.document-ref { color: var(--muted); font: 12px var(--font-mono); white-space: nowrap; }
 .symptom { line-height: 1.8; font-size: 15px; }
 .file-list { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 24px; }
 .hint-label { color: var(--muted); font-size: 12px; }
 .file-list code { max-width: 100%; background: none; padding: 0; }
+.file-ref { display: flex; flex-wrap: wrap; align-items: center; gap: 0 16px; max-width: 100%; }
+.file-actions { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0 12px; }
+.file-notice { color: var(--muted); font-size: 12px; }
+@media (hover: none) and (pointer: coarse) { .file-open { display: none; } }
 .concept-entry { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .concept-entry summary { min-height: 56px; padding: 16px 4px; font-size: 14px; font-weight: 600; }
 .concept-entry summary::marker { color: var(--accent); }
@@ -172,6 +176,8 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 .workbench-status { display: grid; gap: 2px; min-width: 0; }
 .workbench-label { color: var(--muted); font-size: 12px; }
 .workbench-value { font: 13px/1.5 var(--font-mono); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.workbench-jump { padding: 2px 0; border: 0; background: none; text-align: left; text-decoration: underline dotted; text-underline-offset: 4px; }
+.workbench-jump:hover { text-decoration-style: solid; }
 .workbench-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .demo-stage { background: var(--bg-soft); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 22px; min-width: 0; }
 .exercise-frame { display: block; width: 100%; border: 0; background: var(--bg-soft); }
@@ -187,7 +193,9 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 .checks-list:empty { margin-top: 0; }
 .checks-list { margin-top: 24px; }
 .check-row { display: flex; gap: 16px; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--border); }
-.check-chip { flex-shrink: 0; font: 11px var(--font-mono); }
+.check-chip { flex-shrink: 0; font: 12px var(--font-mono); }
+.check-repeat { margin-top: 6px; }
+.check-repeat summary { min-height: 24px; color: var(--muted); font-size: 13px; }
 .check-row.pass .check-chip { color: var(--ok); }
 .check-row.fail .check-chip { color: var(--err); }
 .check-row.pending .check-chip { color: var(--muted); }
@@ -201,6 +209,8 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 .hint-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 52px; gap: 16px; padding: 12px 4px; border: 0; background: none; color: var(--text); text-align: left; font-size: 13px; }
 .hint-toggle:hover { color: var(--accent); }
 .hint-toggle .tier { color: var(--muted); font-size: 12px; }
+.hint-confirm p { color: var(--muted); }
+.hint-confirm .quiet-button { color: var(--text); }
 .hint-body { font-size: 14px; padding: 4px 4px 20px; overflow-wrap: anywhere; }
 .log-resolution { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--ok); }
 .log-resolution h3 { margin: 0; color: var(--ok); font-size: 21px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; }
@@ -219,10 +229,11 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 .notes-list dd { margin: 0; font: 13px/1.6 var(--font-mono); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .field-notes-note { margin-top: 12px; }
 .hint-opened { margin-left: auto; color: var(--muted); font: 12px var(--font-mono); }
-.resolution-review { margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--border); max-width: 70ch; }
-.resolution-review p { color: var(--muted); margin-top: 12px; }
-.resolution-review ul { padding-left: 20px; font-size: 14px; }
-.resolution-review li + li { margin-top: 8px; }
+.log-reflection { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+.log-reflection h3 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; }
+.log-reflection p { margin-top: 8px; color: var(--muted); font-size: 14px; }
+.log-reflection ul { margin: 10px 0 0; padding-left: 20px; font-size: 14px; }
+.log-reflection li + li { margin-top: 6px; }
 
 @media (min-width: 901px) {
   /* Every section is visible in two columns, so the jump links give way to a tighter heading. */
@@ -250,7 +261,7 @@ a.incident-row:focus-visible { outline-offset: -2px; }
   .notebook-layout > * { width: 100%; }
   .working-area { display: grid; grid-template-columns: minmax(0, 1fr); }
   .checks-entry { margin-top: 28px; }
-  .incident-row { grid-template-columns: 36px minmax(0, 1.2fr) minmax(0, 1fr) 68px; gap: 16px; }
+  .incident-row { grid-template-columns: 36px minmax(0, 1.2fr) minmax(0, 1fr) 72px; gap: 16px; }
 }
 @media (max-width: 600px) {
   .app { padding: 0 20px 24px; }
@@ -268,29 +279,26 @@ a.incident-row:focus-visible { outline-offset: -2px; }
   .assignment-index { font-size: 52px; }
   .current-assignment h2 { font-size: 21px; margin-top: 0; }
   .current-assignment .btn { margin-top: 18px; }
-  .assignment-note { font-size: 10px; }
   .register-heading { gap: 16px; }
   .register-heading h2 { font-size: 19px; }
-  .register-heading > span { font-size: 11px; text-align: right; }
-  .incident-row { grid-template-columns: 24px minmax(0, 1fr) 60px; gap: 4px 12px; padding: 16px 0; }
+  .register-heading > span { text-align: right; }
+  .incident-row { grid-template-columns: 24px minmax(0, 1fr) 64px; gap: 4px 12px; padding: 16px 0; }
   .incident-number { grid-row: 1 / 3; align-self: start; padding-top: 2px; font-size: 12px; }
   .incident-name { font-size: 14px; }
-  .incident-concept { grid-column: 2; font-size: 11px; }
-  .incident-status { grid-column: 3; grid-row: 1 / 3; align-self: start; padding-top: 4px; font-size: 10px; }
+  .incident-concept { grid-column: 2; }
+  .incident-status { grid-column: 3; grid-row: 1 / 3; align-self: start; padding-top: 4px; }
   .level-header { padding-top: 12px; }
   .level-heading { gap: 16px; margin-top: 18px; }
   .folio-number { font-size: 44px; }
   .level-heading h1 { font-size: 30px; }
-  .level-metadata { gap: 8px 14px; font-size: 11px; }
+  .level-metadata { gap: 8px 14px; }
   .section-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-bottom: 24px; }
   .section-nav button { font-size: 12px; }
   .section-heading { gap: 12px; flex-wrap: wrap; }
   .section-heading h2 { font-size: 19px; }
-  .quiet-button { font-size: 11px; }
   .demo-stage { padding: 16px; }
   .notes-list > div { grid-template-columns: 7rem minmax(0, 1fr); gap: 12px; }
-  .app-footer { margin-top: 44px; align-items: flex-start; font-size: 11px; }
-  .footer-credit { font-size: 10px; }
+  .app-footer { margin-top: 44px; align-items: flex-start; }
 }
 
 /* Feedback remains immediate when reduced motion is preferred. */

@@ -2,13 +2,13 @@ import { useSyncExternalStore } from 'react';
 import { levels } from '../levels/index.js';
 import { isUnlocked } from './progression.js';
 import { activityFor, getLearningSnapshot, subscribeLearning } from './learning.js';
-import { formatDay, plural } from './format.js';
+import { capitalize, formatDay, plural } from './format.js';
 import Arrow from './Arrow.jsx';
 
 function rowNote({ checkRuns, hintsRevealed, lastPracticedAt, resolvedAt }, done) {
   const work = [checkRuns && plural(checkRuns, 'run'), hintsRevealed.length && plural(hintsRevealed.length, 'hint')].filter(Boolean);
   const parts = done
-    ? [resolvedAt && `Closed ${formatDay(resolvedAt)}`, ...work]
+    ? [resolvedAt && capitalize(formatDay(resolvedAt)), ...work]
     : work.length ? [...work, lastPracticedAt && `last worked ${formatDay(lastPracticedAt)}`] : [];
   return parts.filter(Boolean).join(' · ') || null;
 }
@@ -42,6 +42,8 @@ export default function LevelMap({ completed }) {
   const nextLevel = levels.find((level) => !completed.has(level.id) && isUnlocked(level, completed, levels));
   const completedCount = levels.filter((level) => completed.has(level.id)).length;
   const allDone = completedCount === levels.length;
+  const nextActivity = nextLevel ? activityFor(telemetry, nextLevel.id) : null;
+  const started = Boolean(nextActivity && (nextActivity.checkRuns || nextActivity.hintsRevealed.length));
 
   return (
     <main id="main-content" tabIndex={-1}>
@@ -63,7 +65,7 @@ export default function LevelMap({ completed }) {
             <p>{allDone ? 'All fifteen incidents are resolved. Revisit any entry below to keep the concepts fresh.' : nextLevel.concept}</p>
             {!allDone && (
               <a className="btn btn-primary" href={`#/level/${nextLevel.id}`}>
-                {completedCount === 0 ? 'Start Incident 01' : `Continue Incident ${String(nextLevel.number).padStart(2, '0')}`}
+                {started ? 'Continue' : 'Start'} Incident {String(nextLevel.number).padStart(2, '0')}
                 <Arrow />
               </a>
             )}

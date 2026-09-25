@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { runIsolatedCheck } from './exercise-frame.js';
 import { recordCheckRun } from './learning.js';
+import { markRepeatedFailures } from './check-results.js';
 import { formatDay, formatMoment, formatTime, plural } from './format.js';
 import Arrow from './Arrow.jsx';
 
@@ -58,28 +59,39 @@ export function useCheckRuns(level, { isComplete, onAllPass }) {
   return { results, running, runs, current, runAll };
 }
 
-function benchStatus({ results, running, current }, { isComplete, activity, total }) {
+function benchStatus({ results, running, current }, { isComplete, total }) {
   if (running) return { label: 'Verification', value: 'Running the checks…' };
-  if (current?.resolved) return { label: 'Status', value: `Resolved on run ${current.number}`, tone: 'state-ok' };
   if (current) {
     const allPassed = current.passed === current.total;
-    return { label: 'Last run', value: `Run ${current.number} · ${current.passed} of ${current.total} passed`, tone: allPassed ? 'state-ok' : 'state-fail' };
+    const value = current.resolved ? `Run ${current.number} · resolved` : `Run ${current.number} · ${current.passed} of ${current.total} passed`;
+    return { label: 'Last run', value, tone: allPassed ? 'state-ok' : 'state-fail', jump: true };
   }
-  if (results) return { label: 'Last run', value: 'Could not finish', tone: 'state-fail' };
-  if (isComplete) return { label: 'Not run this visit', value: activity.resolvedAt ? `Resolved ${formatDay(activity.resolvedAt)}` : 'Resolved', tone: 'state-ok' };
-  return { label: 'Not run this visit', value: `${plural(total, 'check')} to pass` };
+  if (results) return { label: 'Last run', value: 'Could not finish', tone: 'state-fail', jump: true };
+  return { label: 'Verification', value: isComplete ? 'Not run this visit' : `${plural(total, 'check')} to pass` };
+}
+
+function showLog() {
+  const target = document.getElementById('run-summary') ?? document.getElementById('checks');
+  target?.scrollIntoView({ block: 'start' });
+  target?.focus({ preventScroll: true });
 }
 
 /** The loop's controls and latest result, kept in reach while the learner reads. */
-export function Workbench({ level, checks, isComplete, activity, next }) {
-  const status = benchStatus(checks, { isComplete, activity, total: level.checks.length });
+export function Workbench({ level, checks, isComplete, next }) {
+  const status = benchStatus(checks, { isComplete, total: level.checks.length });
   const label = checks.running ? 'Running…' : isComplete ? 'Run checks again' : checks.results ? 'Re-run checks' : 'Run checks';
 
   return (
     <div className="workbench">
       <p className="workbench-status">
         <span className="workbench-label">{status.label}</span>
-        <span className={`workbench-value ${status.tone ?? ''}`}>{status.value}</span>
+        {status.jump ? (
+          <button type="button" className={`workbench-value workbench-jump ${status.tone}`} onClick={showLog}>
+            {status.value}<span className="sr-only"> — show the log</span>
+          </button>
+        ) : (
+          <span className={`workbench-value ${status.tone ?? ''}`}>{status.value}</span>
+        )}
       </p>
       <div className="workbench-actions">
         {/* One button in every state keeps keyboard focus through a run; runAll ignores repeat presses. */}
@@ -123,9 +135,9 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
 
       <div className="checks-list" aria-live="polite" aria-atomic="false">
         {current && !running && (
-          <p className="check-summary">Run {current.number} · {formatTime(current.at)} — {current.passed} of {current.total} checks passed.</p>
+          <p className="check-summary" id="run-summary" tabIndex={-1}>Run {current.number} · {formatTime(current.at)} — {current.passed} of {current.total} checks passed.</p>
         )}
-        {results?.map((r, i) => (
+        {results && markRepeatedFailures(results).map((r, i) => (
           <div
             key={i}
             className={`check-row ${r.pending ? 'pending' : r.pass ? 'pass' : 'fail'}`}
@@ -133,7 +145,12 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
             <span className="check-chip">{r.pending ? 'PEND' : r.pass ? 'PASS' : 'FAIL'}</span>
             <div className="check-body">
               <div className="check-name">{r.name}</div>
-              {!r.pending && !r.pass && <div className="check-error">{r.message}</div>}
+              {!r.pending && !r.pass && (r.repeatsFailure ? (
+                <details className="check-repeat">
+                  <summary>Same cause as the failure above</summary>
+                  <div className="check-error">{r.message}</div>
+                </details>
+              ) : <div className="check-error">{r.message}</div>)}
             </div>
           </div>
         ))}
@@ -161,6 +178,14 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
       {!running && standing && <p className="log-standing">{standing}</p>}
       {!running && current && !current.resolved && !standing && (
         <p className="section-note last-run-note">Results describe run {current.number}. Re-run after editing your source files.</p>
+      )}
+
+      {isComplete && !running && (
+        <div className="log-reflection">
+          <h3>Make the fix stick.</h3>
+          <p>Before moving on, explain what React was doing, why your change corrected it, and which signal helped you find it. Use each check as a prompt:</p>
+          <ul>{level.checks.map((check) => <li key={check.name}>{check.name}</li>)}</ul>
+        </div>
       )}
 
       {earlier.length > 0 && (
