@@ -47,6 +47,8 @@ a:hover { color: var(--accent); }
 button, a, summary { transition: color 150ms, background-color 150ms, border-color 150ms; }
 :where(a, button, summary, input, select, textarea):focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 [tabindex='-1']:focus { outline: none; }
+/* Jump and record targets show where focus landed; the page title and main stay unmarked. */
+.jump-target:focus { outline: 2px solid var(--accent); outline-offset: 4px; }
 ::selection { color: var(--bg); background: var(--accent); }
 input, textarea { caret-color: var(--accent); }
 h1, h2, h3, p { margin: 0; }
@@ -203,7 +205,7 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 .check-row { display: flex; gap: 16px; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--border); }
 .check-chip { flex-shrink: 0; font: 12px var(--font-mono); }
 .check-repeat { margin-top: 6px; }
-.check-repeat summary { min-height: 24px; color: var(--muted); font-size: 13px; }
+.check-repeat summary { min-height: 44px; padding: 10px 0; color: var(--muted); font-size: 13px; }
 .check-row.pass .check-chip { color: var(--ok); }
 .check-row.fail .check-chip { color: var(--err); }
 .check-row.pending .check-chip { color: var(--muted); }

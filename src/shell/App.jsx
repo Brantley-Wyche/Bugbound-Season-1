@@ -130,6 +130,7 @@ export default function App() {
             aria-valuemin="0"
             aria-valuemax={levels.length}
             aria-valuenow={completedCount}
+            aria-valuetext={`${completedCount} of ${levels.length} incidents resolved`}
           >
             {levels.map((l) => (
               <span

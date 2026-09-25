@@ -50,7 +50,7 @@ export default function LevelMap({ completed }) {
       <section className="notebook-intro" aria-labelledby="page-title">
         <div className="intro-copy">
           <h1 id="page-title" tabIndex={-1}>Learn React<br />by fixing it.</h1>
-          <p>Fifteen incidents. One working notebook.<br />Read the report, find the cause, and make the fix in your editor.</p>
+          <p>Fifteen incidents. One working notebook.<br />Learn the concept, reproduce the report, repair the file in your editor, and verify with the checks.</p>
           <button type="button" className="text-link" onClick={() => {
             document.getElementById('incident-register')?.scrollIntoView();
             document.getElementById('incident-register')?.focus({ preventScroll: true });

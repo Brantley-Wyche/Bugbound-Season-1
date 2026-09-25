@@ -37,7 +37,7 @@ export default function HintBox({ levelId, openedBefore = [] }) {
 
   return (
     <section className="hint-entry" aria-labelledby="hints">
-      <h2 id="hints" tabIndex={-1}>A little help, when you need it.</h2>
+      <h2 id="hints" className="jump-target" tabIndex={-1}>A little help, when you need it.</h2>
       <p className="hints-note">
         Start with a nudge. Each hint reveals a little more; open only as much as you need.
       </p>
@@ -55,11 +55,15 @@ export default function HintBox({ levelId, openedBefore = [] }) {
               >
                 <span>Hint {i + 1}</span>
                 {openedEarlier.includes(i + 1) && <span className="hint-opened">opened before</span>}
-                <span className="tier">{HINT_TIERS[i]}{revealed[i] ? ' · Hide' : ''}</span>
+                <span className="tier">{HINT_TIERS[i]}{revealed[i] || confirming ? ' · Hide' : ''}</span>
               </button>
               <div className="hint-body" id={`${levelId}-hint-${i + 1}`} hidden={!revealed[i] && !confirming}>
                 {revealed[i] ? decode(b64) : confirming ? (
-                  <div className="hint-confirm">
+                  <div className="hint-confirm" onKeyDown={(event) => {
+                    if (event.key !== 'Escape') return;
+                    setConfirmingAnswer(false);
+                    answerToggle.current?.focus();
+                  }}>
                     <p>This hint shows the fix. The earlier hints may be enough to find it yourself.</p>
                     <button type="button" className="quiet-button" onClick={() => { reveal(i); answerToggle.current?.focus(); }}>Show the answer</button>
                   </div>

@@ -25,6 +25,14 @@ if (level) {
     // the fix. Retry once React Refresh's 16ms update debounce has applied the
     // new code; a still-broken component simply fails again.
     import.meta.hot?.on('vite:afterUpdate', () => setTimeout(() => boundary.current?.retry(), 50));
+    // Keep the shell's Ctrl+Enter / Cmd+Enter working while focus is inside the preview.
+    window.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' || !(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.closest('a[href]'))) return;
+      event.preventDefault();
+      parent.postMessage({ type: 'bugbound:run-checks' }, location.origin);
+    });
     const resize = new ResizeObserver(() => {
       parent.postMessage({ type: 'bugbound:preview-size', height: Math.ceil(rootElement.getBoundingClientRect().height) }, location.origin);
     });

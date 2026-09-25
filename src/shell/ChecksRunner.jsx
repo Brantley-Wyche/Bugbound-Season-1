@@ -30,6 +30,8 @@ export function useCheckRuns(level, { isComplete, onAllPass }) {
     const controller = new AbortController();
     activeRun.current = controller;
     const resolves = !isComplete;
+    // The summary and resolution record leave the log when a run starts; keep focus on the loop.
+    if (document.activeElement?.closest('.checks-entry')) document.getElementById('run-checks')?.focus({ preventScroll: true });
     setRunning(true);
     setCurrent(null);
     setResults(level.checks.map((c) => ({ name: c.name, pending: true })));
@@ -77,10 +79,21 @@ export function useCheckRuns(level, { isComplete, onAllPass }) {
     event.preventDefault();
     runAll();
   });
+  const onPreviewShortcut = useEffectEvent(() => runAll());
   useEffect(() => {
     const listener = (event) => onShortcut(event);
+    // The preview frame forwards the same shortcut when focus is inside it.
+    const fromPreview = (event) => {
+      if (event.origin !== location.origin || event.data?.type !== 'bugbound:run-checks') return;
+      if (event.source !== document.querySelector('.exercise-frame')?.contentWindow) return;
+      onPreviewShortcut();
+    };
     window.addEventListener('keydown', listener);
-    return () => window.removeEventListener('keydown', listener);
+    window.addEventListener('message', fromPreview);
+    return () => {
+      window.removeEventListener('keydown', listener);
+      window.removeEventListener('message', fromPreview);
+    };
   }, []);
 
   return { results, running, runs, current, notice, runAll };
@@ -156,14 +169,23 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
   const earlier = runs.slice(current ? 1 : 0);
   const standing = standingNote(checks, { isComplete, activity });
   const hints = activity.hintsRevealed.length;
+  const failingNow = Boolean(current && current.passed < current.total);
+
+  // The resolving run is the one moment the page moves: to the record, so it is read before Next.
+  useEffect(() => {
+    if (!current?.resolved || running) return;
+    const record = document.getElementById('resolution-record');
+    record?.scrollIntoView({ block: 'start' });
+    record?.focus({ preventScroll: true });
+  }, [current, running]);
 
   return (
     <section className="checks-entry" aria-busy={running} aria-labelledby="checks">
-      <div className="section-heading"><h2 id="checks" tabIndex={-1}>Verification log</h2><span className="document-ref">{plural(level.checks.length, 'check')}</span></div>
+      <div className="section-heading"><h2 id="checks" className="jump-target" tabIndex={-1}>Verification log</h2><span className="document-ref">{plural(level.checks.length, 'check')}</span></div>
 
       <div className="checks-list" aria-live="polite" aria-atomic="false">
         {current && !running && (
-          <p className="check-summary" id="run-summary" tabIndex={-1}>Run {current.number} · {formatTime(current.at)} — {current.passed} of {current.total} checks passed.</p>
+          <p className="check-summary jump-target" id="run-summary" tabIndex={-1}>Run {current.number} · {formatTime(current.at)} — {current.passed} of {current.total} checks passed.</p>
         )}
         {results && markRepeatedFailures(results).map((r, i) => (
           <div
@@ -187,7 +209,7 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
       <div aria-live="polite" aria-atomic="true">
         {current?.resolved && !running && (
           <div className="log-resolution">
-            <h3>Resolved.</h3>
+            <h3 id="resolution-record" className="jump-target" tabIndex={-1}>Resolved.</h3>
             <p>
               Recorded {formatMoment(current.at)} after {plural(current.number, 'run')}{hints ? ` and ${plural(hints, 'hint')}` : ''}.
               {isSaved ? ' Saved in this browser.' : ' Your fix passed, but progress has not been saved yet.'}
@@ -200,7 +222,7 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
         <p className="checks-idle">
           {isComplete
             ? 'No checks run in this visit. Run the checks to verify your current source.'
-            : <>Fix the bug in your editor (the page hot-reloads), then run the checks<span className="shortcut-hint"> with the button or <kbd>{RUN_SHORTCUT}</kbd></span>. All green unlocks the next incident.</>}
+            : <>Repair the file in your editor (the page hot-reloads), then verify with the checks<span className="shortcut-hint"> using the button or <kbd>{RUN_SHORTCUT}</kbd></span>. All green unlocks the next incident.</>}
         </p>
       )}
       {!running && standing && <p className="log-standing">{standing}</p>}
@@ -208,7 +230,7 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
         <p className="section-note last-run-note">Results describe run {current.number}. Re-run after editing your source files<span className="shortcut-hint"> (<kbd>{RUN_SHORTCUT}</kbd>)</span>.</p>
       )}
 
-      {isComplete && !running && (
+      {isComplete && !running && !failingNow && (
         <div className="log-reflection">
           <h3>Make the fix stick.</h3>
           <p>Before moving on, explain what React was doing, why your change corrected it, and which signal helped you find it. Use each check as a prompt:</p>
