@@ -78,6 +78,7 @@ kbd { padding: 1px 5px; border: 1px solid var(--border-strong); border-radius: v
 .uptime-strip { display: flex; gap: 3px; }
 .seg { width: 5px; height: 17px; background: var(--border); }
 .seg.done { background: var(--ok); }
+.seg.current { background: var(--accent); }
 .header-progress .label { color: var(--muted); font: 12px var(--font-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .desktop-notice { display: none; }
 .desktop-notice svg { width: 32px; height: 32px; flex-shrink: 0; }
@@ -118,25 +119,39 @@ kbd { padding: 1px 5px; border: 1px solid var(--border-strong); border-radius: v
 .current-assignment p { color: var(--muted); font-size: 13px; margin-top: 10px; }
 .current-assignment .btn { margin-top: 26px; }
 .assignment-note { display: block; color: var(--muted); font-size: 12px; margin-top: 18px; }
-.current-assignment.is-resolved { display: block; }
-.current-assignment.is-resolved .assignment-index { font-size: 52px; color: var(--ok); }
+.resume { padding: 44px 0 40px; }
+.resume-eyebrow { color: var(--muted); font-size: 12px; }
+.resume-main { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 28px; margin-top: 14px; }
+.resume h1 { font-size: clamp(30px, 4vw, 44px); overflow-wrap: anywhere; }
+.resume-meta { margin-top: 10px; color: var(--muted); font-size: 13px; }
+.resume-meta span + span::before { content: '·'; margin: 0 8px; }
+.resume .row-note { margin-top: 6px; }
+.resume.is-resolved .assignment-index { color: var(--ok); font-size: 52px; }
+.season-line { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
 .register-section + .register-section { margin-top: 44px; }
 .register-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--border-strong); padding-bottom: 16px; }
 .register-heading h2 { font-size: 21px; }
 .register-heading > span { color: var(--muted); font-size: 12px; }
 .incident-list { list-style: none; padding: 0; margin: 0; }
-.incident-row { display: grid; grid-template-columns: 48px minmax(0, 1.15fr) minmax(0, 1fr) 84px; align-items: center; gap: 20px; min-height: 64px; padding: 16px 12px; border-bottom: 1px solid var(--border); text-decoration: none; }
+.register-columns { display: grid; grid-template-columns: 48px minmax(0, 1.15fr) minmax(0, 1fr) 128px; gap: 20px; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--muted); font: 12px var(--font-mono); }
+.register-columns span:last-child { text-align: right; }
+.incident-row { display: grid; grid-template-columns: 48px minmax(0, 1.15fr) minmax(0, 1fr) 128px; align-items: center; gap: 20px; min-height: 64px; padding: 16px 12px; border-bottom: 1px solid var(--border); text-decoration: none; }
 a.incident-row:hover { background: var(--bg-soft); color: var(--text); }
 a.incident-row:focus-visible { outline-offset: -2px; }
 .incident-number { font: 14px var(--font-mono); color: var(--muted); }
 .incident-name { font-weight: 500; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
 .incident-concept { color: var(--muted); font-size: 12px; line-height: 1.5; }
-.incident-status { text-align: right; font: 12px var(--font-mono); color: var(--muted); }
+.incident-status { display: grid; justify-items: end; text-align: right; font: 12px/1.5 var(--font-mono); color: var(--muted); }
+.closed { display: inline-flex; align-items: center; gap: 6px; }
+.closed-mark { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.closed-date { color: var(--muted); font-variant-numeric: tabular-nums; }
 .incident-status.state-open { color: var(--accent); }
 .state-fail { color: var(--err); }
 .incident-status.state-ok { color: var(--ok); }
 .incident-row.is-open .incident-number { color: var(--accent); }
 .incident-row.is-open .incident-name { font-weight: 650; }
+.incident-row.is-resolved .incident-number { color: var(--ok); }
+.incident-row.is-locked .incident-name { color: var(--muted); font-weight: 400; }
 .row-note { display: block; margin-top: 2px; color: var(--muted); font: 400 12px/1.5 var(--font-mono); font-variant-numeric: tabular-nums; }
 
 /* Each incident is one continuous document. */
@@ -271,7 +286,10 @@ a.incident-row:focus-visible { outline-offset: -2px; }
   .notebook-layout > * { width: 100%; }
   .working-area { display: grid; grid-template-columns: minmax(0, 1fr); }
   .checks-entry { margin-top: 28px; }
-  .incident-row { grid-template-columns: 36px minmax(0, 1.2fr) minmax(0, 1fr) 72px; gap: 16px; }
+  .incident-row, .register-columns { grid-template-columns: 36px minmax(0, 1.2fr) minmax(0, 1fr) 112px; gap: 16px; }
+  .resume-main { grid-template-columns: auto minmax(0, 1fr); row-gap: 20px; }
+  .resume-main .btn { grid-column: 2; justify-self: start; }
+  .resume-main .assignment-index { font-size: 72px; margin-bottom: 0; }
 }
 @media (max-width: 600px) {
   .app { padding: 0 20px 24px; }
@@ -292,7 +310,11 @@ a.incident-row:focus-visible { outline-offset: -2px; }
   .register-heading { gap: 16px; }
   .register-heading h2 { font-size: 19px; }
   .register-heading > span { text-align: right; }
-  .incident-row { grid-template-columns: 24px minmax(0, 1fr) 64px; gap: 4px 12px; padding: 16px 0; }
+  .register-columns { display: none; }
+  .resume { padding: 36px 0 32px; }
+  .resume-main .assignment-index { font-size: 48px; align-self: start; }
+  .resume-main .btn { grid-column: 1 / -1; }
+  .incident-row { grid-template-columns: 24px minmax(0, 1fr) 96px; gap: 4px 12px; padding: 16px 0; }
   .incident-number { grid-row: 1 / 3; align-self: start; padding-top: 2px; font-size: 12px; }
   .incident-name { font-size: 14px; }
   .incident-concept { grid-column: 2; }

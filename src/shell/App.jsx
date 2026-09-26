@@ -57,6 +57,7 @@ export default function App() {
   const [progress, setProgress] = useState(() => loadProgress(levelIds));
   const { completed } = progress;
   const completedCount = levels.filter((level) => completed.has(level.id)).length;
+  const currentLevel = levels.find((level) => !completed.has(level.id) && isUnlocked(level, completed, levels));
 
   useEffect(() => {
     const syncProgress = event => {
@@ -135,7 +136,7 @@ export default function App() {
             {levels.map((l) => (
               <span
                 key={l.id}
-                className={`seg ${completed.has(l.id) ? 'done' : ''}`}
+                className={`seg ${completed.has(l.id) ? 'done' : l === currentLevel ? 'current' : ''}`}
                 aria-hidden="true"
               />
             ))}
