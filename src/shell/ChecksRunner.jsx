@@ -156,9 +156,7 @@ function standingNote({ current, results }, { isComplete, activity }) {
     return <><strong>Your resolution{resolvedOn ? ` from ${resolvedOn}` : ''} still stands.</strong> The source as it is now fails {plural(current.total - current.passed, 'check')}; re-run after editing.</>;
   }
   if (!results) {
-    return resolvedOn && activity.resolvedRun
-      ? <><strong>Resolved {resolvedOn}</strong> after {plural(activity.resolvedRun, 'run')}. That record stays; a new run checks the source as it is now.</>
-      : <><strong>Resolved in an earlier visit.</strong> That record stays; a new run checks the source as it is now.</>;
+    return <><strong>Your resolution stands</strong>{activity.resolvedRun ? ` after ${plural(activity.resolvedRun, 'run')}` : ''}. A new run checks the source as it is now and never undoes that record.</>;
   }
   return null;
 }
@@ -218,11 +216,10 @@ export function VerificationLog({ level, checks, isComplete, isSaved, activity }
         )}
       </div>
 
-      {!running && !results && (
+      {/* A resolved incident's standing note does this job on later visits. */}
+      {!running && !results && !isComplete && (
         <p className="checks-idle">
-          {isComplete
-            ? 'No checks run in this visit. Run the checks to verify your current source.'
-            : <>Repair the file in your editor (the page hot-reloads), then verify with the checks<span className="shortcut-hint"> using the button or <kbd>{RUN_SHORTCUT}</kbd></span>. All green unlocks the next incident.</>}
+          Repair the file in your editor, then verify with the checks<span className="shortcut-hint"> using the button or <kbd>{RUN_SHORTCUT}</kbd></span>. All green unlocks the next incident.
         </p>
       )}
       {!running && standing && <p className="log-standing">{standing}</p>}

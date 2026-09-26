@@ -28,12 +28,10 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
   // Nothing recorded anywhere yet: orient a brand-new learner. Fixed for the visit so the
   // page never shifts under the learner's first action.
   const [firstVisit] = useState(() => Object.keys(getLearningSnapshot().levels).length === 0 && !isComplete);
-  const checkedThisVisit = Boolean(checks.results);
-  const previewNote = !isComplete
-    ? 'Reproduce the report here. Edit the source in your editor; changes hot-reload.'
-    : checkedThisVisit
-      ? 'This preview shows the source as it is now. Edit it in your editor; changes hot-reload.'
-      : 'Resolved earlier. This preview shows the source as it is now; run the checks to confirm it still passes.';
+  // Each surface has one job: the preview note covers the preview, the log covers verifying.
+  const previewNote = isComplete
+    ? 'This preview shows the source as it is now. It hot-reloads as you edit.'
+    : 'Reproduce the report here. It hot-reloads as you edit the source.';
   const folio = String(level.number).padStart(2, '0');
 
   return (
@@ -44,7 +42,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
           <span className="folio-number"><span className="sr-only">Incident </span>{folio}</span>
           <div>
             <h1 id="page-title" tabIndex={-1}>{level.title}</h1>
-            <p className="level-metadata"><span>{level.concept}</span><span>Severity: {level.severity}</span><span className={isComplete ? 'state-ok' : 'state-open'}>{isComplete ? (isSaved ? 'Resolved' : 'Resolved · not saved yet') : 'Open'}</span></p>
+            <p className="level-metadata"><span>{level.concept}</span><span>Severity: {level.severity}</span><span className={isComplete ? 'state-ok' : 'state-open'}>{isComplete ? (isSaved ? `Resolved${activity.resolvedAt ? ` ${formatDay(activity.resolvedAt)}` : ''}` : 'Resolved · not saved yet') : 'Open'}</span></p>
             {firstVisit && <p className="first-visit"><strong>New here?</strong> Each incident is one broken component. Read the concept, reproduce the report in the preview, repair the file in your editor, then verify with the checks.</p>}
           </div>
         </div>
@@ -60,7 +58,7 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
         <section className="incident-brief" aria-labelledby="report-title">
           <div className="section-heading">
             <h2 id="report-title">Bug report</h2>
-            <span className="document-ref">BUG-{String(level.number).padStart(3, '0')}{isComplete && <span className="state-ok"> · Resolved{activity.resolvedAt ? ` ${formatDay(activity.resolvedAt)}` : ''}</span>}</span>
+            <span className="document-ref">BUG-{String(level.number).padStart(3, '0')}</span>
           </div>
           <p className="symptom">{level.symptom}</p>
           <div className="file-list">
