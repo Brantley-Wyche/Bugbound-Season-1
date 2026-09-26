@@ -425,7 +425,7 @@ The palette pairs slightly green graphite neutrals with paper-like text and a re
 
 Feedback uses **sage — ok** for resolved incidents and passing checks, **soft coral — err** for failed checks and preview crashes, and **pale blue — info** for code references. These are functional signals rather than a second brand palette.
 
-**The Status Text Rule.** Color reinforces explicit words such as Open, Locked, Resolved, PASS, FAIL, and PEND; it does not carry the state alone. "Resolved" is the single word for a completed incident; "not saved yet" qualifies it when the completion write failed.
+**The Status Text Rule.** Color reinforces explicit words such as Open, Opens after NN, Resolved, PASS, FAIL, and PEND; it does not carry the state alone. "Resolved" is the single word for a completed incident; "not saved yet" qualifies it when the completion write failed.
 
 ## Typography
 
@@ -454,7 +454,7 @@ The frontmatter includes descriptive contextual and responsive roles for every f
 
 The application has a centered maximum width of (1200px), with desktop horizontal padding of (48px). A ruled header and footer frame the content without a sidebar or sticky shell.
 
-The register introduction uses two columns. Incident rows align a number, title, concept, and right-aligned text status on continuous horizontal rules. The current incident gains stronger title weight and amber numbering rather than a surrounding card.
+On a first visit the register introduction uses two columns: the pitch and the first assignment. Once the learner has progress, the current incident leads instead (see Register as ledger). Incident rows align a number, title, concept, and right-aligned text status on continuous horizontal rules under muted monospaced column heads. The current incident gains stronger title weight and amber numbering rather than a surrounding card.
 
 The lesson is one document. Above (900px), the report, concept disclosure, field notes, and hints occupy the left column while the workbench, preview, and verification log occupy the right; the ratio is (1 : 1.1), with a normal column gap of (64px). The right column stretches to the full layout height so the workbench can stay pinned while the learner reads. Above (900px) every section is visible, so the section jumps are hidden and the lesson heading carries its own bottom rule. At or below (900px), sections follow their DOM order in one column: report, concept, workbench with preview and log, field notes, then hints, and the section jumps return.
 
@@ -494,11 +494,13 @@ Section jumps use native buttons that scroll and focus the target without changi
 
 ### Incident register
 
-Rows are ruled list entries, with a minimum height of (64px). Available entries are links; locked entries remain visible non-interactive rows. Resolved and open entries have explicit status labels. Hover only applies to linked rows. Mobile keeps the number and status aligned while placing the concept under the title.
+The register reads as a ledger. Each act's heading counts its progress (Act I · 3 of 12 resolved), and muted monospaced column heads (No., Incident, Concept, Status) sit above the rows, hidden from assistive technology and on phones. Rows are ruled list entries, with a minimum height of (64px). Available entries are links; locked entries remain visible non-interactive rows with muted titles. Every row has an explicit status: a sage check and Resolved with the resolution date beneath it (sage incident number), Open in amber, or Opens after NN in muted text. Hover only applies to linked rows. Mobile keeps the number and status aligned while placing the concept under the title.
 
-Open and resolved rows carry a muted monospaced record note under the title once the learner has worked on them: runs and hints, then "last worked" for open incidents, or the resolution date for resolved ones. Locked rows and untouched incidents show no note.
+Every row carries a muted monospaced record note under the title, led by its BUG ID so the register matches the bug report: then runs and hints once the learner has worked on it, and "last worked" for open incidents. The resolution date lives in the status column, not the note.
 
 The current assignment's action reads Start Incident NN until the learner has run checks or opened a hint on that incident, then Continue Incident NN.
+
+Once any incident is resolved or worked on, the pitch gives way to the current incident. A muted eyebrow (Current incident · Act I, hidden from assistive technology because the heading carries it) sits above the amber folio, the incident title as the page heading, its concept and BUG ID, the learner's record for it (runs, hints, last worked, or Opened by resolving NN with the date), and Start or Continue on the right. A ruled season line follows: N of 15 resolved and the last incident resolved. Field notes outlive a progress reset, so the season line only names incidents resolved now. When all fifteen are resolved, the same band becomes the season's record: a sage 15/15, "A season well resolved.", the span of resolution dates, total check runs, and total hints.
 
 ### Concept and hint disclosures
 
@@ -520,7 +522,7 @@ When the page opens with nothing recorded in local telemetry, the lesson heading
 
 The workbench heads the right column: a muted label over a monospaced status on the left, the verification actions on the right, and a strong bottom rule over the page background. At (601px) and above it is sticky at the top of the working column, so the latest result and the next action stay in reach while the learner reads the report or scrolls the log; content inside the working column scrolls into view clear of it. At or below (600px) it sits in flow and its actions wrap.
 
-Its label is Verification before a run and Last run after one. The status reads the checks still to pass, Not run this visit, Running the checks, or the run number with its passed count (coral when a check fails, sage when all pass, "resolved" on the resolving run). After a run the status is a native button with a dotted underline that scrolls to and focuses the run summary in the log, clear of the pinned workbench. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation. Pressing it during a run announces that the checks are already running through a visually hidden status region. Starting a run while focus is inside the log (on the run summary or the resolution record, which the run replaces) moves focus to the Run button.
+Its label is Verification before a run and Last run after one. The status reads the checks still to pass, Not run this visit, Running the checks, or the run number with its passed count (coral when a check fails, sage when all pass, "resolved" on the resolving run). After a run the status is a native button with a dotted underline that scrolls to and focuses the run summary in the log, clear of the pinned workbench. One Run checks button persists in every state so keyboard focus survives a run: amber primary until the incident is complete, then an outlined Run checks again beside the amber Next continuation. Amber always marks the next thing to do: when a later run on a resolved incident fails or cannot finish, Run checks again turns amber and Next is outlined until a run passes. Pressing it during a run announces that the checks are already running through a visually hidden status region. Starting a run while focus is inside the log (on the run summary or the resolution record, which the run replaces) moves focus to the Run button.
 
 Ctrl+Enter (⌘ Enter on a Mac) runs the checks from anywhere in the shell except form fields and links, which keep their own Enter behavior. The preview frame forwards the same shortcut to the shell by same-origin message, so it also works while focus is inside the preview. The button exposes it through `aria-keyshortcuts` (no `title`, which some tools promote to the accessible name), and the log's idle and last-run notes mention it in a `kbd` element; touch-first devices hide those mentions.
 
@@ -552,7 +554,7 @@ Your field notes sits in the left column between the concept and hints: an (18px
 
 ### Progress
 
-The header shows fifteen small rectangular segments with an adjacent resolved count. Completed segments use sage and remaining ones use the rule color. The accessible progressbar exposes numeric progress and an `aria-valuetext` such as "3 of 15 incidents resolved". On mobile, the segments become short horizontal marks.
+The header shows fifteen small rectangular segments with an adjacent resolved count. Completed segments use sage, the current incident's segment uses amber, and the rest use the rule color. The accessible progressbar exposes numeric progress and an `aria-valuetext` such as "3 of 15 incidents resolved". On mobile, the segments become short horizontal marks.
 
 ### Exercise-local controls
 

@@ -120,6 +120,9 @@ function showLog() {
 export function Workbench({ level, checks, isComplete, next }) {
   const status = benchStatus(checks, { isComplete, total: level.checks.length });
   const label = checks.running ? 'Running…' : isComplete ? 'Run checks again' : checks.results ? 'Re-run checks' : 'Run checks';
+  // Amber marks the next thing to do: running the checks until the source passes, then moving on.
+  const passing = Boolean(checks.current && checks.current.passed === checks.current.total);
+  const runIsNext = !isComplete || Boolean(checks.results && !passing);
 
   return (
     <div className="workbench">
@@ -135,11 +138,11 @@ export function Workbench({ level, checks, isComplete, next }) {
       </p>
       <div className="workbench-actions">
         {/* One button in every state keeps keyboard focus through a run; runAll ignores repeat presses. */}
-        <button id="run-checks" className={`btn${isComplete ? '' : ' btn-primary'}`} onClick={checks.runAll} aria-disabled={checks.running} aria-keyshortcuts="Control+Enter Meta+Enter">
+        <button id="run-checks" className={`btn${runIsNext ? ' btn-primary' : ''}`} onClick={checks.runAll} aria-disabled={checks.running} aria-keyshortcuts="Control+Enter Meta+Enter">
           {label}
         </button>
         {isComplete && (
-          <a className="btn btn-primary" href={next ? `#/level/${next.id}` : '#/'}>
+          <a className={`btn${runIsNext ? '' : ' btn-primary'}`} href={next ? `#/level/${next.id}` : '#/'}>
             {next ? `Next: ${next.title}` : 'Return to the register'} <Arrow />
           </a>
         )}
