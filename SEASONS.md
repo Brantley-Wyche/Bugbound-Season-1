@@ -4,7 +4,7 @@
 
 **Owner:** Brantley Wyche (GitHub: [Brantley-Wyche](https://github.com/Brantley-Wyche)). He is using Bugbound to refamiliarize himself with React after time away, and the repos double as portfolio pieces — design quality matters.
 
-**Season 1 (complete):** https://github.com/Brantley-Wyche/React-Practice-Site — the reference implementation. Everything below builds on it.
+**Season 1 (complete):** https://github.com/Brantley-Wyche/Bugbound-Season-1 — the reference implementation. Everything below builds on it.
 
 ---
 
