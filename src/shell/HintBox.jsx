@@ -44,8 +44,13 @@ export default function HintBox({ levelId, openedBefore = [] }) {
       <div className="hint-list">
         {encoded.map((b64, i) => {
           const confirming = confirmingAnswer && i === answerTier && !revealed[i];
+          // Escape backs out of the answer warning from anywhere in the item, toggle included.
           return (
-            <div className="hint-item" key={i}>
+            <div className="hint-item" key={i} onKeyDown={confirming ? (event) => {
+              if (event.key !== 'Escape') return;
+              setConfirmingAnswer(false);
+              answerToggle.current?.focus();
+            } : undefined}>
               <button
                 ref={i === answerTier ? answerToggle : undefined}
                 className="hint-toggle"
@@ -59,11 +64,7 @@ export default function HintBox({ levelId, openedBefore = [] }) {
               </button>
               <div className="hint-body" id={`${levelId}-hint-${i + 1}`} hidden={!revealed[i] && !confirming}>
                 {revealed[i] ? decode(b64) : confirming ? (
-                  <div className="hint-confirm" onKeyDown={(event) => {
-                    if (event.key !== 'Escape') return;
-                    setConfirmingAnswer(false);
-                    answerToggle.current?.focus();
-                  }}>
+                  <div className="hint-confirm">
                     <p>This hint shows the fix. The earlier hints may be enough to find it yourself.</p>
                     <button type="button" className="quiet-button" onClick={() => { reveal(i); answerToggle.current?.focus(); }}>Show the answer</button>
                   </div>
