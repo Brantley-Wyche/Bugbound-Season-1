@@ -26,7 +26,7 @@ Keep this file identical in all three repositories. When a family rule changes, 
 |---|---|---|---|
 | Metaphor | On-call field notebook | Investigation desk | Engineering lab |
 | Framework | React (Vite) | Next.js App Router | See its `DESIGN.md` |
-| Structure it adds | Ledger register, field notes, resolution recorded in the verification log, sticky workbench | Incident rail, always-open Concept reference, framed live route, verification record, header progress strip, numbered collapsed rail | A precise instrument for self-directed investigations (see its `DESIGN.md`) |
+| Structure it adds | Ledger register, field notes, resolution recorded in the verification log, sticky workbench | Incident rail, always-open Concept reference, framed live route, verification record with the Closed entry, case log, docket register, header progress strip, numbered collapsed rail | A precise instrument for self-directed investigations (see its `DESIGN.md`) |
 | Its own accent | Sage for resolved, pale blue for code | Teal for tools and focus, sage for Closed | Muted teal |
 | Type | Public Sans, Cascadia Mono | Geist, Geist Mono; Source Serif 4 for Concept prose | Segoe UI Variable, Cascadia |
 | Finished word | Resolved | Closed | Defined in its `DESIGN.md` |
