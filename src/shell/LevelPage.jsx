@@ -10,6 +10,8 @@ import FileReference from './FileReference.jsx';
 import Arrow from './Arrow.jsx';
 import HintBox from './HintBox.jsx';
 
+const restartClock = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+
 function jumpToSection(id) {
   const target = document.getElementById(id);
   if (target instanceof HTMLDetailsElement) target.open = true;
@@ -21,6 +23,7 @@ function jumpToSection(id) {
 
 export default function LevelPage({ level, isComplete, isSaved = isComplete, onComplete }) {
   const [demoKey, setDemoKey] = useState(0);
+  const [restartedAt, setRestartedAt] = useState(null);
   const next = levels.find((item) => item.number === level.number + 1);
   const telemetry = useSyncExternalStore(subscribeLearning, getLearningSnapshot).levels;
   const activity = activityFor(telemetry, level.id);
@@ -28,6 +31,9 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
   // Nothing recorded anywhere yet: orient a brand-new learner. Fixed for the visit so the
   // page never shifts under the learner's first action.
   const [firstVisit] = useState(() => Object.keys(getLearningSnapshot().levels).length === 0 && !isComplete);
+  // "Start here" points at the concept only until the learner has opened it.
+  const [conceptOpened, setConceptOpened] = useState(false);
+  const suggestConcept = firstVisit && !conceptOpened;
   // Each surface has one job: the preview note covers the preview, the log covers verifying.
   const previewNote = isComplete
     ? 'This preview shows the source as it is now. It hot-reloads as you edit.'
@@ -67,17 +73,24 @@ export default function LevelPage({ level, isComplete, isSaved = isComplete, onC
           </div>
         </section>
 
-        <details className={`concept-entry${firstVisit ? ' is-suggested' : ''}`} id="concept">
-          <summary><span>{firstVisit ? 'Start here: read the concept' : 'Read the concept'}</span><span className="concept-topic">{level.concept}</span></summary>
-          <div className="concept-content"><Prose paragraphs={level.lesson} /></div>
-        </details>
+        <section className="concept-section" aria-labelledby="concept-heading">
+          <h2 id="concept-heading" className="sr-only">Concept</h2>
+          <details className={`concept-entry${suggestConcept ? ' is-suggested' : ''}`} id="concept" onToggle={(event) => { if (event.currentTarget.open) setConceptOpened(true); }}>
+            <summary><span>{suggestConcept ? 'Start here: read the concept' : 'Read the concept'}</span><span className="concept-topic">{level.concept}</span></summary>
+            <div className="concept-content"><Prose paragraphs={level.lesson} /></div>
+          </details>
+        </section>
 
         <div className="working-area">
           <Workbench level={level} checks={checks} isComplete={isComplete} next={next} />
           <section className="preview-entry" aria-labelledby="live-preview">
             <div className="section-heading">
               <h2 id="live-preview" className="jump-target" tabIndex={-1}>Live preview</h2>
-              <button className="quiet-button" aria-describedby="preview-restart-note" onClick={() => setDemoKey((key) => key + 1)}>Restart preview</button>
+              <span className="preview-restart">
+                {/* Always mounted so the first restart is announced; seconds tell repeat restarts apart. */}
+                <span className="restart-status" role="status">{restartedAt ? `Restarted ${restartClock.format(restartedAt)}` : ''}</span>
+                <button className="quiet-button" aria-describedby="preview-restart-note" onClick={() => { setDemoKey((key) => key + 1); setRestartedAt(Date.now()); }}>Restart preview</button>
+              </span>
             </div>
             <p className="section-note">{previewNote}</p>
             <div className="demo-stage"><ExercisePreview key={demoKey} level={level} /></div>
