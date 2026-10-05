@@ -25,11 +25,13 @@ Keep this file identical in all three repositories. When a family rule changes, 
 | | Season 1 | Season 2 | Season 3 |
 |---|---|---|---|
 | Metaphor | On-call field notebook | Investigation desk | Engineering lab |
-| Framework | React (Vite) | Next.js App Router | See its `DESIGN.md` |
-| Structure it adds | Ledger register, field notes, resolution recorded in the verification log, sticky workbench | Incident rail, always-open Concept reference, framed live route, verification record with the Closed entry, case log, docket register, header progress strip, numbered collapsed rail | A precise instrument for self-directed investigations (see its `DESIGN.md`) |
-| Its own accent | Sage for resolved, pale blue for code | Teal for tools and focus, sage for Closed | Muted teal |
+| Framework | React (Vite) | Next.js App Router | React 19 (Vite) |
+| Structure it adds | Ledger register, field notes, resolution recorded in the verification log, sticky workbench | Incident rail, always-open Concept reference, framed live route, verification record with the Closed entry, case log, docket register, header progress strip, numbered collapsed rail | Agent brief builder, pinned instrument bar with a run trace, Repaired entry in the verification record, readings row and readings log, register grouped by generation batch, batch and lab records, a brief that draws on the learner's readings |
+| Its own accent | Sage for resolved, pale blue for code | Teal for tools and focus, sage for Closed | Muted teal for passes and the Repaired record |
 | Type | Public Sans, Cascadia Mono | Geist, Geist Mono; Source Serif 4 for Concept prose | Segoe UI Variable, Cascadia |
-| Finished word | Resolved | Closed | Defined in its `DESIGN.md` |
+| Finished word | Resolved | Closed | Repaired |
+
+Season 3 is the final season. The family's arc runs from notebook to case file to lab: Season 1 resolves incidents and notes the work, Season 2 closes cases and keeps their record, and Season 3 repairs incidents the learner commissions and shows the readings back.
 
 ## Evolving the family
 
