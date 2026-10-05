@@ -37,7 +37,7 @@ export default function HintBox({ levelId, openedBefore = [] }) {
 
   return (
     <section className="hint-entry" aria-labelledby="hints">
-      <h2 id="hints" className="jump-target" tabIndex={-1}>A little help, when you need it.</h2>
+      <h2 id="hints" className="jump-target" tabIndex={-1}><span className="sr-only">Hints: </span>A little help, when you need it.</h2>
       <p className="hints-note">
         Start with a nudge. Each hint reveals a little more; open only as much as you need.
       </p>

@@ -165,11 +165,11 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 .first-visit { max-width: 60ch; margin-top: 12px; color: var(--muted); font-size: 13px; }
 .first-visit strong { color: var(--text); font-weight: 600; }
 .section-nav { display: flex; flex-wrap: wrap; gap: 4px 28px; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 32px; }
-.section-nav button { display: inline-flex; align-items: center; min-height: 44px; border: 0; padding: 0; background: none; font-size: 12px; color: var(--muted); text-align: left; text-underline-offset: 5px; }
-.section-nav button:hover { color: var(--accent); text-decoration: underline; }
+.section-nav button { display: inline-flex; align-items: center; min-height: 44px; border: 0; padding: 0; background: none; font-size: 13px; color: var(--text); text-align: left; text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 5px; }
+.section-nav button:hover { color: var(--accent); text-decoration-color: currentColor; }
 .notebook-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-rows: auto auto auto 1fr; column-gap: 64px; row-gap: 28px; grid-template-areas: 'brief work' 'concept work' 'notes work' 'hints work'; align-items: start; }
 .incident-brief { grid-area: brief; }
-.concept-entry { grid-area: concept; }
+.concept-section { grid-area: concept; }
 .working-area { grid-area: work; align-self: stretch; min-width: 0; }
 .field-notes { grid-area: notes; min-width: 0; }
 .hint-entry { grid-area: hints; min-width: 0; }
@@ -210,6 +210,9 @@ a.incident-row:focus-visible { outline-offset: -2px; }
 .demo-crash { color: var(--err); }
 .demo-crash strong { display: block; font-size: 15px; margin-bottom: 12px; font-weight: 600; }
 .demo-crash pre { font: 12px/1.8 var(--font-mono); margin: 0 0 18px; }
+.demo-crash-note { margin-bottom: 12px; color: var(--muted); font-size: 13px; }
+.preview-restart { display: inline-flex; align-items: center; gap: 12px; }
+.restart-status { color: var(--muted); font: 12px var(--font-mono); font-variant-numeric: tabular-nums; }
 .checks-entry { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
 .checks-idle { margin-top: 16px; }
 .restart-note { margin: 12px 0 0; }

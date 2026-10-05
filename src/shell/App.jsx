@@ -55,6 +55,7 @@ function ResetControl({ onReset }) {
 export default function App() {
   const route = useHashRoute();
   const [progress, setProgress] = useState(() => loadProgress(levelIds));
+  const focusAfterReset = useRef(false);
   const { completed } = progress;
   const completedCount = levels.filter((level) => completed.has(level.id)).length;
   const currentLevel = levels.find((level) => !completed.has(level.id) && isUnlocked(level, completed, levels));
@@ -94,9 +95,17 @@ export default function App() {
       setProgress(previous => ({ ...previous, error: result.error, errorAction: 'reset' }));
       return;
     }
+    focusAfterReset.current = true;
     setProgress(result.progress);
     navigate('/');
   };
+
+  // The reset control leaves with the progress it cleared, so focus goes to the register's title.
+  useEffect(() => {
+    if (!focusAfterReset.current) return;
+    focusAfterReset.current = false;
+    document.getElementById('page-title')?.focus({ preventScroll: true });
+  }, [progress.generation]);
 
   const levelId = route.startsWith('#/level/') ? route.slice('#/level/'.length) : null;
   const activeLevel = levelId ? levels.find((l) => l.id === levelId) : null;
@@ -182,7 +191,8 @@ export default function App() {
 
       <footer className="app-footer">
         <span>Bugbound / Season 01<br /><span className="footer-credit">React + Vite · Incidents &amp; bugs by Claude</span></span>
-        <ResetControl onReset={resetProgress} />
+        {/* Nothing to clear at 0 resolved; a failed reset retries from the storage notice. */}
+        {completedCount > 0 && <ResetControl onReset={resetProgress} />}
       </footer>
     </div>
   );

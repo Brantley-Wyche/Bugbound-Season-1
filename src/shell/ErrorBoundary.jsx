@@ -23,8 +23,9 @@ export default class ErrorBoundary extends Component {
             <strong>The component crashed</strong>
             <pre>{String(this.state.error?.message || this.state.error)}</pre>
           </div>
+          <p className="demo-crash-note">Saving the source retries on its own.</p>
           <button className="btn" onClick={() => this.retry()}>
-            Retry after editing
+            Retry now
           </button>
         </div>
       );
