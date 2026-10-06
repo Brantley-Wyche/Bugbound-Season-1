@@ -125,7 +125,7 @@ export function Workbench({ level, checks, isComplete, next }) {
   const runIsNext = !isComplete || Boolean(checks.results && !passing);
 
   return (
-    <div className="workbench">
+    <div className="workbench" role="region" aria-label="Verification controls">
       <p className="workbench-status">
         <span className="workbench-label">{status.label}</span>
         {status.jump ? (
