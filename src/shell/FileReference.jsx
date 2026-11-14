@@ -8,10 +8,15 @@ export default function FileReference({ path }) {
   const [notice, setNotice] = useState('');
   const timer = useRef(null);
   const code = useRef(null);
+  const lastMessage = useRef('');
   useEffect(() => () => clearTimeout(timer.current), []);
 
+  // A repeated message would not change the status text, and some screen readers skip a
+  // message identical to the last one, so a repeat gets an unspoken no-break space.
   const flash = (message, duration = 2000) => {
-    setNotice(message);
+    const next = message === lastMessage.current ? `${message}\u00A0` : message;
+    lastMessage.current = next;
+    setNotice(next);
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setNotice(''), duration);
   };

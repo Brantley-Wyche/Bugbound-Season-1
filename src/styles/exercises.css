@@ -143,3 +143,8 @@
   transition: opacity 0.15s;
 }
 .lv-bars button:hover { opacity: 1; }
+/* High Contrast removes the gradient fill, so each bar keeps a system-color outline. */
+@media (forced-colors: active) {
+  .lv-bars button { border: 1px solid ButtonText; }
+  .lv-bars button:hover { border-color: Highlight; }
+}

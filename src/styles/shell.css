@@ -46,6 +46,8 @@ button, a, summary { transition: color 150ms, background-color 150ms, border-col
 input, textarea { caret-color: var(--accent); }
 h1, h2, h3, p { margin: 0; }
 h1, h2 { text-wrap: balance; }
+/* Shell prose avoids one-word last lines; exercise previews keep the browser default. */
+.app :is(p, .hint-body) { text-wrap: pretty; }
 h1 { font-weight: 650; letter-spacing: -0.035em; line-height: 1.08; }
 h2 { font-size: 21px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; }
 code { font: 0.87em/1.55 var(--font-mono); color: var(--info); background: var(--bg-soft); padding: 2px 5px; border-radius: 2px; overflow-wrap: anywhere; }
@@ -327,6 +329,14 @@ a.incident-row:focus-visible { outline-offset: -2px; }
   .app-footer { flex-wrap: wrap; margin-top: 44px; align-items: flex-start; }
   .reset-confirm { flex-basis: 100%; justify-content: flex-start; }
   .reset-confirm > span { text-align: left; }
+}
+
+/* High Contrast drops background colors, so progress segments switch to system colors:
+   resolved segments fill, the current one takes the highlight, the rest stay outlined. */
+@media (forced-colors: active) {
+  .seg { forced-color-adjust: none; background: Canvas; border: 1px solid CanvasText; }
+  .seg.done { background: CanvasText; }
+  .seg.current { background: Highlight; border-color: Highlight; }
 }
 
 /* Feedback remains immediate when reduced motion is preferred. */

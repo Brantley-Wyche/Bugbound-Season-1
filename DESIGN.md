@@ -446,6 +446,8 @@ The sans serif stays direct and readable. Monospace is reserved for reference nu
 
 The frontmatter includes descriptive contextual and responsive roles for every font-size value used in the shell, including the notice, assignment count, hints, verification, footer, and relative inline code. Sidecar typography metadata identifies the corresponding contexts. Responsive roles apply only at their documented breakpoint.
 
+Headings balance their lines; shell paragraphs and hint text use pretty wrapping so a paragraph does not end on a single word. Exercise previews keep the browser's default wrapping.
+
 **The Reference Type Rule.** Keep prose in Public Sans and reserve monospace for operational references and measured results.
 
 **The 12px Floor.** No shell text is smaller than (12px) at any width, including status labels, references, metadata, notes, and the footer credit. Smaller roles that earlier existed for mobile now share the (12px) floor.
@@ -554,7 +556,7 @@ Your field notes sits in the left column between the concept and hints: an (18px
 
 ### Progress
 
-The header shows fifteen small rectangular segments with an adjacent resolved count. Completed segments use sage, the current incident's segment uses amber, and the rest use the rule color. The accessible progressbar exposes numeric progress and an `aria-valuetext` such as "3 of 15 incidents resolved". On mobile, the segments become short horizontal marks.
+The header shows fifteen small rectangular segments with an adjacent resolved count. Completed segments use sage, the current incident's segment uses amber, and the rest use the rule color. The accessible progressbar exposes numeric progress and an `aria-valuetext` such as "3 of 15 incidents resolved". On mobile, the segments become short horizontal marks. In forced colors (Windows High Contrast), which drops background colors, the segments switch to system colors: resolved segments fill with text color, the current one takes the highlight color, and the rest are outlined.
 
 ### Exercise-local controls
 
